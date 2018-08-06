@@ -1,0 +1,19 @@
+# gokaygurcan/dockerfile-nginx
+
+language: bash
+services: docker
+
+sudo: false
+
+git:
+  depth: 1
+
+before_script: docker --version
+
+script:
+  - docker build --rm -t gokaygurcan/nginx:test .
+  - docker run --rm -p 80:80 gokaygurcan/nginx:test
+  - curl http://localhost:80
+
+notifications:
+  email: false

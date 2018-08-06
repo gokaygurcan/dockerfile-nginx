@@ -1,6 +1,6 @@
 # gokaygurcan/dockerfile-nginx
 
-FROM gokaygurcan/ubuntu:18.04
+FROM gokaygurcan/ubuntu:latest
 
 LABEL maintainer="Gökay Gürcan <docker@gokaygurcan.com>"
 
@@ -26,9 +26,9 @@ ENV USR_SRC=/usr/src \
     PAGESPEED_RELEASE=${pagespeed_release}
 
 RUN set -ex && \
-    sudo apt-get update -q && \
-    sudo apt-get upgrade -yq && \
-    sudo apt-get install -yq --no-install-recommends --no-install-suggests \
+    sudo apt-get update -qq && \
+    sudo apt-get upgrade -yqq && \
+    sudo apt-get install -yqq --no-install-recommends --no-install-suggests \
     apt-transport-https \
     apt-utils \
     aria2 \
@@ -43,14 +43,16 @@ RUN set -ex && \
     libpcre3-dev \
     tar \
     unzip \
+    uuid-dev \
     wget \
     zlibc \
     zlib1g \
     zlib1g-dev && \
-    sudo apt-get install uuid-dev -yq --no-install-recommends --no-install-suggests && \
-    sudo apt-get autoclean -y && \
-    sudo apt-get autoremove -y && \
-    sudo rm -rf /var/lib/apt/lists/*
+    sudo apt-get autoclean -yqq && \
+    sudo apt-get autoremove -yqq && \
+    sudo rm -rf /var/lib/apt/lists/* && \
+    sudo rm -rf /tmp/* && \
+    sudo rm -rf /var/tmp/*
 
 # download and compile geoip
 WORKDIR ${USR_SRC}
@@ -145,7 +147,7 @@ RUN sudo sh ./configure \
     --with-http_stub_status_module \
     --with-http_sub_module \
     --with-http_v2_module \
-    --with-openssl=./modules/openssl \
+    --with-openssl=${USR_SRC_NGINX_MODS}/openssl \
     --without-http_fastcgi_module \
     --without-http_uwsgi_module \
     --without-http_scgi_module \
@@ -160,10 +162,10 @@ RUN sudo sh ./configure \
 
 WORKDIR /etc/nginx
 
-EXPOSE 80 443
+EXPOSE 80/tcp 443/tcp
 
-VOLUME /etc/nginx
+VOLUME [ "/etc/nginx", "/var/log/nginx", "/var/www", "/etc/letsencrypt" ]
 
 STOPSIGNAL SIGTERM
 
-CMD ["sudo", "nginx", "-g", "daemon off;"]
+CMD [ "sudo", "nginx", "-g", "daemon off;" ]
