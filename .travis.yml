@@ -8,12 +8,14 @@ sudo: false
 git:
   depth: 1
 
-before_script: docker --version
+before_script:
+  - docker version
+  - docker info
 
 script:
   - docker build --rm -t gokaygurcan/nginx:test .
-  - docker run --rm -d -p 80:80 gokaygurcan/nginx:test
-  - curl http://localhost:80
+  - docker run --rm -d --name nginx -p 80:80 gokaygurcan/nginx:test
+  - curl -I http://localhost:80
 
 notifications:
   email: false
