@@ -18,6 +18,7 @@ ENV DEBIAN_FRONTEND="noninteractive" \
     PAGESPEED_VERSION=1.13.35.2 \
     PAGESPEED_RELEASE=stable
 
+# install dependencies
 RUN set -ex && \
     sudo apt-get update -qq && \
     sudo apt-get upgrade -yqq && \
@@ -45,8 +46,8 @@ RUN set -ex && \
 
 # download and compile geoip
 WORKDIR ${USR_SRC}
-RUN wget http://geolite.maxmind.com/download/geoip/api/c/GeoIP.tar.gz && \
-    tar -zxvf GeoIP.tar.gz && \
+RUN wget -q http://geolite.maxmind.com/download/geoip/api/c/GeoIP.tar.gz && \
+    tar -zxf GeoIP.tar.gz && \
     rm GeoIP.tar.gz && \
     mv GeoIP-* GeoIP && \
     cd GeoIP && \
@@ -54,63 +55,65 @@ RUN wget http://geolite.maxmind.com/download/geoip/api/c/GeoIP.tar.gz && \
     make && \
     make install && \
     echo '/usr/local/lib' | tee -a /etc/ld.so.conf.d/geoip.conf && \
-    ldconfig
+    ldconfig && \
+    # download new geoip databases
+    mkdir -p /usr/local/share/GeoIP && \
+    cd /usr/local/share/GeoIP && \
+    rm -rf ./* && \
+    wget -q http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz && \
+    gzip -d GeoIP.dat.gz && \
+    wget -q http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz && \
+    gzip -d GeoLiteCity.dat.gz
 
 # download nginx
-RUN wget https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
-    tar -xzvf nginx-${NGINX_VERSION}.tar.gz && \
+WORKDIR ${USR_SRC}
+RUN wget -q https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
+    tar -xzf nginx-${NGINX_VERSION}.tar.gz && \
     rm nginx-${NGINX_VERSION}.tar.gz && \
-    mv nginx-* nginx
+    mv nginx-* nginx && \
+    mkdir -p ${USR_SRC_NGINX_MODS}
 
-# create modules directory
-RUN mkdir -p ${USR_SRC_NGINX_MODS}
+# download openssl, njx, cache purge, test cookie, sysguard, nchan, pagespeed and psol
 WORKDIR ${USR_SRC_NGINX_MODS}
-
-# download openssl, njx, cache purge, sysguard, pagespeed and psol
-RUN wget https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz && \
-    tar -xzvf openssl-${OPENSSL_VERSION}.tar.gz && \
+RUN wget -q https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz && \
+    tar -xzf openssl-${OPENSSL_VERSION}.tar.gz && \
     rm openssl-${OPENSSL_VERSION}.tar.gz && \
     mv openssl-* openssl && \
-    wget -O njs-${NJS_VERSION}.tar.gz https://github.com/nginx/njs/archive/${NJS_VERSION}.tar.gz && \
-    tar -xzvf njs-${NJS_VERSION}.tar.gz && \
-    rm njs-${NJS_VERSION}.tar.gz && \
+    wget -q https://github.com/nginx/njs/archive/${NJS_VERSION}.tar.gz && \
+    tar -xzf ${NJS_VERSION}.tar.gz && \
+    rm ${NJS_VERSION}.tar.gz && \
     mv njs-* njs && \
-    wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERS_MORE_VERSION}.tar.gz && \
-    tar -xzvf v${HEADERS_MORE_VERSION}.tar.gz && \
+    wget -q https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERS_MORE_VERSION}.tar.gz && \
+    tar -xzf v${HEADERS_MORE_VERSION}.tar.gz && \
     rm v${HEADERS_MORE_VERSION}.tar.gz && \
     mv headers-more-nginx-module-* headers-more && \
-    wget https://github.com/FRiCKLE/ngx_cache_purge/archive/${CACHE_PURGE_VERSION}.tar.gz && \
-    tar -xzvf ${CACHE_PURGE_VERSION}.tar.gz && \
+    wget -q https://github.com/FRiCKLE/ngx_cache_purge/archive/${CACHE_PURGE_VERSION}.tar.gz && \
+    tar -xzf ${CACHE_PURGE_VERSION}.tar.gz && \
     rm ${CACHE_PURGE_VERSION}.tar.gz && \
     mv ngx_cache_purge-* cache-purge && \
-    aria2c https://github.com/kyprizel/testcookie-nginx-module/tarball/master && \
-    tar -xzvf kyprizel-testcookie-nginx-module-*.tar.gz && \
+    aria2c -q https://github.com/kyprizel/testcookie-nginx-module/tarball/master && \
+    tar -xzf kyprizel-testcookie-nginx-module-*.tar.gz && \
     rm kyprizel-testcookie-nginx-module-*.tar.gz && \
     mv kyprizel-testcookie-nginx-module-* testcookie && \
-    aria2c https://github.com/vozlt/nginx-module-sysguard/tarball/master && \
-    tar -xzvf vozlt-nginx-module-sysguard-*.tar.gz && \
+    aria2c -q https://github.com/vozlt/nginx-module-sysguard/tarball/master && \
+    tar -xzf vozlt-nginx-module-sysguard-*.tar.gz && \
     rm vozlt-nginx-module-sysguard-*.tar.gz && \
     mv vozlt-nginx-module-sysguard-* sysguard && \
-    wget https://github.com/apache/incubator-pagespeed-ngx/archive/v${PAGESPEED_VERSION}-${PAGESPEED_RELEASE}.tar.gz && \
-    tar -xzvf v${PAGESPEED_VERSION}-${PAGESPEED_RELEASE}.tar.gz && \
+    aria2c -q https://github.com/slact/nchan/tarball/master && \
+    tar -xzf slact-nchan-*.tar.gz && \
+    rm slact-nchan-*.tar.gz && \
+    mv slact-nchan-* nchan && \
+    wget -q https://github.com/apache/incubator-pagespeed-ngx/archive/v${PAGESPEED_VERSION}-${PAGESPEED_RELEASE}.tar.gz && \
+    tar -xzf v${PAGESPEED_VERSION}-${PAGESPEED_RELEASE}.tar.gz && \
     rm v${PAGESPEED_VERSION}-${PAGESPEED_RELEASE}.tar.gz && \
     mv *-pagespeed-* pagespeed && \
     cd ${USR_SRC_NGINX_MODS}/pagespeed && \
-    wget https://dl.google.com/dl/page-speed/psol/${PAGESPEED_VERSION}-x64.tar.gz && \
-    tar -xzvf ${PAGESPEED_VERSION}-x64.tar.gz && \
+    wget -q https://dl.google.com/dl/page-speed/psol/${PAGESPEED_VERSION}-x64.tar.gz && \
+    tar -xzf ${PAGESPEED_VERSION}-x64.tar.gz && \
     rm ${PAGESPEED_VERSION}-x64.tar.gz && \
     mkdir -p /var/ngx_pagespeed_cache
 
-# download geoip databases
-RUN mkdir -p /usr/local/share/GeoIP
-WORKDIR /usr/local/share/GeoIP
-RUN rm -rf ./* && \
-    wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz && \
-    gzip -d GeoIP.dat.gz && \
-    wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz && \
-    gzip -d GeoLiteCity.dat.gz
-
-# compile nginx  
+# compile nginx
 WORKDIR ${USR_SRC_NGINX}
 RUN sh ./configure \
     --conf-path=/etc/nginx/nginx.conf \
@@ -146,6 +149,7 @@ RUN sh ./configure \
     --add-module=${USR_SRC_NGINX_MODS}/headers-more \
     --add-module=${USR_SRC_NGINX_MODS}/cache-purge \
     --add-module=${USR_SRC_NGINX_MODS}/testcookie \
+    --add-module=${USR_SRC_NGINX_MODS}/nchan \
     --add-module=${USR_SRC_NGINX_MODS}/sysguard && \
     make && \
     make install
