@@ -1,15 +1,16 @@
-# NGINX File Structure
+# NGINX Folder Structure
 
-| Path                               | Description                             |
-| :--------------------------------- | :-------------------------------------- |
-| /etc/nginx/conf.d/\*.conf          | Necessary configuration files           |
-| /etc/nginx/conf.optional.d/\*.conf | Extra and re-usable configuration files |
-| /etc/nginx/koi-utf                 | Character set                           |
-| /etc/nginx/koi-win                 | Character set                           |
-| /etc/nginx/mime.types              | MIME types                              |
-| /etc/nginx/nginx.conf              | Main configuration file                 |
-| /etc/nginx/sites-enabled/\*        | Virtual host configuration files        |
-| /etc/nginx/win-utf                 | Character set                           |
+| Path                               | Description                              |
+| :--------------------------------- | :--------------------------------------- |
+| /etc/nginx/conf.d/\*.conf          | Necessary configuration files            |
+| /etc/nginx/conf.optional.d/\*.conf | Extra and re-usable configuration files  |
+| /etc/nginx/htpasswd                | Basic authentication (username:password) |
+| /etc/nginx/koi-utf                 | Character set                            |
+| /etc/nginx/koi-win                 | Character set                            |
+| /etc/nginx/mime.types              | MIME types                               |
+| /etc/nginx/nginx.conf              | Main configuration file                  |
+| /etc/nginx/sites-enabled/\*        | Virtual host configuration files         |
+| /etc/nginx/win-utf                 | Character set                            |
 
 ---
 
@@ -23,6 +24,8 @@
 
 <h2>conf.optional.d/</h2>
 
+- geoip.conf
+- geoip2.conf
 - mail.conf
 - more_headers.conf
 - pagespeed.conf

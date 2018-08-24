@@ -4,45 +4,32 @@ FROM gokaygurcan/ubuntu:latest
 
 LABEL maintainer="Gökay Gürcan <docker@gokaygurcan.com>"
 
-USER root
-
 ENV DEBIAN_FRONTEND="noninteractive" \
     USR_SRC=/usr/src \
     USR_SRC_NGINX=/usr/src/nginx \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
     NGINX_VERSION=1.15.2 \
-    NJS_VERSION=0.2.2 \
+    NJS_VERSION=0.2.3 \
     CACHE_PURGE_VERSION=2.3 \
     HEADERS_MORE_VERSION=0.33 \
-    OPENSSL_VERSION=1.1.1-pre8 \
+    OPENSSL_VERSION=1.1.1-pre9 \
     PAGESPEED_VERSION=1.13.35.2 \
     PAGESPEED_RELEASE=stable
 
+USER root
+
 # install dependencies
 RUN set -ex && \
-    sudo apt-get update -qq && \
-    sudo apt-get upgrade -yqq && \
-    sudo apt-get install -yqq --no-install-recommends --no-install-suggests \
-    apt-transport-https \
-    apt-utils \
+    apt-get update -qq && \
+    apt-get upgrade -yqq && \
+    apt-get install -yqq --no-install-recommends --no-install-suggests \
     aria2 \
-    autotools-dev \
-    autoconf \
-    build-essential \
-    ca-certificates \
-    file \
-    gcc \
-    gzip \
     libmaxminddb0 \
     libmaxminddb-dev \
     libpcre3 \
     libpcre3-dev \
-    make \
     mmdb-bin \
-    tar \
-    unzip \
     uuid-dev \
-    wget \
     zlibc \
     zlib1g \
     zlib1g-dev

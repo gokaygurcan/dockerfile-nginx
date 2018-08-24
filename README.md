@@ -1,9 +1,8 @@
 # NGINX
 
-[![Docker Build Status](https://img.shields.io/docker/build/gokaygurcan/nginx.svg?style=for-the-badge&logo=docker&colorA=22b8eb)](https://hub.docker.com/r/gokaygurcan/nginx/)
-[![Travis CI](https://img.shields.io/travis/gokaygurcan/dockerfile-nginx.svg?style=for-the-badge&logo=travis&colorA=39a85b)](https://travis-ci.org/gokaygurcan/dockerfile-nginx)
+[![Docker Build Status](https://img.shields.io/docker/build/gokaygurcan/nginx.svg?style=for-the-badge&logo=docker&colorA=22b8eb)](https://hub.docker.com/r/gokaygurcan/nginx/) [![Travis CI](https://img.shields.io/travis/gokaygurcan/dockerfile-nginx.svg?style=for-the-badge&logo=travis&colorA=39a85b)](https://travis-ci.org/gokaygurcan/dockerfile-nginx) [![MicroBadger](https://img.shields.io/microbadger/image-size/gokaygurcan/nginx.svg?style=for-the-badge&colorA=337ab7&colorB=252528)](https://microbadger.com/images/gokaygurcan/nginx)
 
-## Environment variables
+<h2>Environment variables</h2>
 
 | Name                 | Value                  |
 | -------------------- | ---------------------- |
@@ -11,14 +10,47 @@
 | USR_SRC_NGINX        | /usr/src/nginx         |
 | USR_SRC_NGINX_MODS   | /usr/src/nginx/modules |
 | NGINX_VERSION        | 1.15.2                 |
-| NJS_VERSION          | 0.2.2                  |
+| NJS_VERSION          | 0.2.3                  |
 | CACHE_PURGE_VERSION  | 2.3                    |
 | HEADERS_MORE_VERSION | 0.33                   |
-| OPENSSL_VERSION      | 1.1.1-pre8             |
+| OPENSSL_VERSION      | 1.1.1-pre9             |
 | PAGESPEED_VERSION    | 1.13.35.2              |
 | PAGESPEED_RELEASE    | stable                 |
 
----
+<h2>Additional packages</h2>
+
+- apt-utils
+- apt-transport-https
+- aptitude
+- autoconf
+- autotools-dev
+- build-essential
+- ca-certificates
+- curl
+
+<h2>Volumes</h2>
+
+| Path             | Description                                                                            |
+| ---------------- | -------------------------------------------------------------------------------------- |
+| /etc/nginx       | NGINX configurations                                                                   |
+| /var/log/nginx   | NGINX logs                                                                             |
+| /var/www         | Default www folder                                                                     |
+| /etc/letsencrypt | Let's Encrypt files (see [certbot](https://github.com/gokaygurcan/dockerfile-certbot)) |
+
+<h2>Ports</h2>
+
+| Port | Process | TCP/UDP |
+| ---- | ------- | ------- |
+| 80   | NGINX   | TCP     |
+| 443  | NGINX   | TCP     |
+
+<h2>CMD</h2>
+
+```bash
+sudo nginx -g daemon off;
+```
+
+<h2>Usage</h2>
 
 To pull the image
 
@@ -29,5 +61,10 @@ docker pull gokaygurcan/nginx
 To run an NGINX container
 
 ```bash
-docker run --rm -p 80:80 -p 443:443 gokaygurcan/nginx
+docker volume create nginx
+docker run --rm --name nginx -p 80:80 -p 443:443 -v nginx:/etc/nginx gokaygurcan/nginx
 ```
+
+---
+
+[![Buy me a coffee](https://www.buymeacoffee.com/assets/img/guidelines/download-assets-sm-2.svg)](https://www.buymeacoffee.com/gokaygurcan)
