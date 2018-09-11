@@ -8,13 +8,9 @@ ENV DEBIAN_FRONTEND="noninteractive" \
     USR_SRC=/usr/src \
     USR_SRC_NGINX=/usr/src/nginx \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
-    NJS_VERSION=0.2.3 \
-    CACHE_PURGE_VERSION=2.3 \
-    HEADERS_MORE_VERSION=0.33 \
     NGINX_VERSION=1.15.3 \
     OPENSSL_VERSION=1.1.1-pre9 \
-    PAGESPEED_VERSION=1.13.35.2 \
-    PAGESPEED_RELEASE=stable
+    PAGESPEED_VERSION=1.13.35.2
 
 USER root
 
@@ -80,18 +76,18 @@ RUN wget -q https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz && 
     tar -xzf openssl-${OPENSSL_VERSION}.tar.gz && \
     rm openssl-${OPENSSL_VERSION}.tar.gz && \
     mv openssl-* openssl && \
-    wget -q https://github.com/nginx/njs/archive/${NJS_VERSION}.tar.gz && \
-    tar -xzf ${NJS_VERSION}.tar.gz && \
-    rm ${NJS_VERSION}.tar.gz && \
-    mv njs-* njs && \
-    wget -q https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERS_MORE_VERSION}.tar.gz && \
-    tar -xzf v${HEADERS_MORE_VERSION}.tar.gz && \
-    rm v${HEADERS_MORE_VERSION}.tar.gz && \
-    mv headers-more-nginx-module-* headers-more && \
-    wget -q https://github.com/FRiCKLE/ngx_cache_purge/archive/${CACHE_PURGE_VERSION}.tar.gz && \
-    tar -xzf ${CACHE_PURGE_VERSION}.tar.gz && \
-    rm ${CACHE_PURGE_VERSION}.tar.gz && \
-    mv ngx_cache_purge-* cache-purge && \
+    aria2c -q https://github.com/nginx/njs/tarball/master && \
+    tar -xzf nginx-njs-*.tar.gz && \
+    rm nginx-njs-*.tar.gz && \
+    mv nginx-njs-* njs && \
+    aria2c -q https://github.com/openresty/headers-more-nginx-module/tarball/master && \
+    tar -xzf openresty-headers-more-nginx-module-*.tar.gz && \
+    rm openresty-headers-more-nginx-module-*.tar.gz && \
+    mv openresty-headers-more-nginx-module-* headers-more && \
+    aria2c -q https://github.com/FRiCKLE/ngx_cache_purge/tarball/master && \
+    tar -xzf FRiCKLE-ngx_cache_purge-*.tar.gz && \
+    rm FRiCKLE-ngx_cache_purge-*.tar.gz && \
+    mv FRiCKLE-ngx_cache_purge-* cache-purge && \
     aria2c -q https://github.com/kyprizel/testcookie-nginx-module/tarball/master && \
     tar -xzf kyprizel-testcookie-nginx-module-*.tar.gz && \
     rm kyprizel-testcookie-nginx-module-*.tar.gz && \
@@ -104,9 +100,9 @@ RUN wget -q https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz && 
     tar -xzf slact-nchan-*.tar.gz && \
     rm slact-nchan-*.tar.gz && \
     mv slact-nchan-* nchan && \
-    wget -q https://github.com/apache/incubator-pagespeed-ngx/archive/v${PAGESPEED_VERSION}-${PAGESPEED_RELEASE}.tar.gz && \
-    tar -xzf v${PAGESPEED_VERSION}-${PAGESPEED_RELEASE}.tar.gz && \
-    rm v${PAGESPEED_VERSION}-${PAGESPEED_RELEASE}.tar.gz && \
+    wget -q https://github.com/apache/incubator-pagespeed-ngx/archive/v${PAGESPEED_VERSION}-stable.tar.gz && \
+    tar -xzf v${PAGESPEED_VERSION}-stable.tar.gz && \
+    rm v${PAGESPEED_VERSION}-stable.tar.gz && \
     mv *-pagespeed-* pagespeed && \
     cd ${USR_SRC_NGINX_MODS}/pagespeed && \
     wget -q https://dl.google.com/dl/page-speed/psol/${PAGESPEED_VERSION}-x64.tar.gz && \
