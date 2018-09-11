@@ -100,6 +100,21 @@ RUN wget -q https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz && 
     tar -xzf slact-nchan-*.tar.gz && \
     rm slact-nchan-*.tar.gz && \
     mv slact-nchan-* nchan && \
+    aria2c -q https://github.com/eustas/ngx_brotli/tarball/master && \
+    tar -xzf eustas-ngx_brotli-*.tar.gz && \
+    rm eustas-ngx_brotli-*.tar.gz && \
+    mv eustas-ngx_brotli-* brotli && \
+    cd ${USR_SRC_NGINX_MODS}/brotli/deps && \
+    rm -rf ./brotli && \
+    aria2c -q https://github.com/google/brotli/tarball/master && \
+    tar -xzf google-brotli-*.tar.gz && \
+    rm google-brotli-*.tar.gz && \
+    mv google-brotli-* brotli && \
+    cd ${USR_SRC_NGINX_MODS} && \
+    aria2c -q https://github.com/aperezdc/ngx-fancyindex/tarball/master && \
+    tar -xzf aperezdc-ngx-fancyindex-*.tar.gz && \
+    rm aperezdc-ngx-fancyindex-*.tar.gz && \
+    mv aperezdc-ngx-fancyindex-* fancyindex && \
     wget -q https://github.com/apache/incubator-pagespeed-ngx/archive/v${PAGESPEED_VERSION}-stable.tar.gz && \
     tar -xzf v${PAGESPEED_VERSION}-stable.tar.gz && \
     rm v${PAGESPEED_VERSION}-stable.tar.gz && \
@@ -147,7 +162,9 @@ RUN sh ./configure \
     --add-module=${USR_SRC_NGINX_MODS}/cache-purge \
     --add-module=${USR_SRC_NGINX_MODS}/testcookie \
     --add-module=${USR_SRC_NGINX_MODS}/nchan \
-    --add-module=${USR_SRC_NGINX_MODS}/sysguard && \
+    --add-module=${USR_SRC_NGINX_MODS}/sysguard \
+    --add-module=${USR_SRC_NGINX_MODS}/brotli \
+    --add-module=${USR_SRC_NGINX_MODS}/fancyindex && \
     make && \
     make install
 
