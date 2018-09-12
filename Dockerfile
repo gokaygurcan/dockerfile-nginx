@@ -14,12 +14,13 @@ ENV DEBIAN_FRONTEND="noninteractive" \
 
 USER root
 
-# install dependencies
 RUN set -ex && \
+    # install dependencies
     apt-get update -qq && \
     apt-get upgrade -yqq && \
     apt-get install -yqq --no-install-recommends --no-install-suggests \
     aria2 \
+    libbrotli-dev \
     libmaxminddb0 \
     libmaxminddb-dev \
     libpcre3 \
@@ -28,11 +29,10 @@ RUN set -ex && \
     uuid-dev \
     zlibc \
     zlib1g \
-    zlib1g-dev
-
-# download and compile geoip: geolite2-city.mmdb, geolite2-country.mmdb, geolite-city.dat and geolite-country.dat
-WORKDIR ${USR_SRC}
-RUN wget -q http://geolite.maxmind.com/download/geoip/api/c/GeoIP.tar.gz && \
+    zlib1g-dev && \
+    # download and compile geoip: geolite2-city.mmdb, geolite2-country.mmdb, geolite-city.dat and geolite-country.dat
+    cd ${USR_SRC} && \
+    wget -q http://geolite.maxmind.com/download/geoip/api/c/GeoIP.tar.gz && \
     tar -zxf GeoIP.tar.gz && \
     rm GeoIP.tar.gz && \
     mv GeoIP-* GeoIP && \
@@ -60,42 +60,47 @@ RUN wget -q http://geolite.maxmind.com/download/geoip/api/c/GeoIP.tar.gz && \
     tar -xzf GeoLite2-City.tar.gz && \
     rm GeoLite2-City.tar.gz && \
     mv GeoLite2-City_*/GeoLite2-City.mmdb geolite2-city.mmdb && \
-    rm -rf GeoLite2-City_*
-
-# download nginx
-WORKDIR ${USR_SRC}
-RUN wget -q https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
+    rm -rf GeoLite2-City_* && \
+    # download nginx
+    cd ${USR_SRC} && \
+    wget -q https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
     tar -xzf nginx-${NGINX_VERSION}.tar.gz && \
     rm nginx-${NGINX_VERSION}.tar.gz && \
     mv nginx-* nginx && \
-    mkdir -p ${USR_SRC_NGINX_MODS}
-
-# download openssl, njx, cache purge, test cookie, sysguard, nchan, pagespeed and psol
-WORKDIR ${USR_SRC_NGINX_MODS}
-RUN wget -q https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz && \
+    # /usr/src/nginx/modules
+    mkdir -p ${USR_SRC_NGINX_MODS} && \
+    cd ${USR_SRC_NGINX_MODS} && \
+    # openssl
+    wget -q https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz && \
     tar -xzf openssl-${OPENSSL_VERSION}.tar.gz && \
     rm openssl-${OPENSSL_VERSION}.tar.gz && \
     mv openssl-* openssl && \
+    # nginx/njs
     aria2c -q https://github.com/nginx/njs/tarball/master && \
     tar -xzf nginx-njs-*.tar.gz && \
     rm nginx-njs-*.tar.gz && \
     mv nginx-njs-* njs && \
+    # openresty/headers-more-nginx-module
     aria2c -q https://github.com/openresty/headers-more-nginx-module/tarball/master && \
     tar -xzf openresty-headers-more-nginx-module-*.tar.gz && \
     rm openresty-headers-more-nginx-module-*.tar.gz && \
     mv openresty-headers-more-nginx-module-* headers-more && \
+    # frickle/ngx_cache_purge
     aria2c -q https://github.com/FRiCKLE/ngx_cache_purge/tarball/master && \
     tar -xzf FRiCKLE-ngx_cache_purge-*.tar.gz && \
     rm FRiCKLE-ngx_cache_purge-*.tar.gz && \
     mv FRiCKLE-ngx_cache_purge-* cache-purge && \
+    # kyprizel/testcookie-nginx-module
     aria2c -q https://github.com/kyprizel/testcookie-nginx-module/tarball/master && \
     tar -xzf kyprizel-testcookie-nginx-module-*.tar.gz && \
     rm kyprizel-testcookie-nginx-module-*.tar.gz && \
     mv kyprizel-testcookie-nginx-module-* testcookie && \
+    # vozlt/nginx-module-sysguard
     aria2c -q https://github.com/vozlt/nginx-module-sysguard/tarball/master && \
     tar -xzf vozlt-nginx-module-sysguard-*.tar.gz && \
     rm vozlt-nginx-module-sysguard-*.tar.gz && \
     mv vozlt-nginx-module-sysguard-* sysguard && \
+    # eustas/ngx_brotli
     aria2c -q https://github.com/eustas/ngx_brotli/tarball/master && \
     tar -xzf eustas-ngx_brotli-*.tar.gz && \
     rm eustas-ngx_brotli-*.tar.gz && \
@@ -107,10 +112,12 @@ RUN wget -q https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz && 
     rm google-brotli-*.tar.gz && \
     mv google-brotli-* brotli && \
     cd ${USR_SRC_NGINX_MODS} && \
+    # aperezdc/ngx-fancyindex
     aria2c -q https://github.com/aperezdc/ngx-fancyindex/tarball/master && \
     tar -xzf aperezdc-ngx-fancyindex-*.tar.gz && \
     rm aperezdc-ngx-fancyindex-*.tar.gz && \
     mv aperezdc-ngx-fancyindex-* fancyindex && \
+    # apache/incubator-pagespeed-ngx and psol
     wget -q https://github.com/apache/incubator-pagespeed-ngx/archive/v${PAGESPEED_VERSION}-stable.tar.gz && \
     tar -xzf v${PAGESPEED_VERSION}-stable.tar.gz && \
     rm v${PAGESPEED_VERSION}-stable.tar.gz && \
@@ -119,11 +126,10 @@ RUN wget -q https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz && 
     wget -q https://dl.google.com/dl/page-speed/psol/${PAGESPEED_VERSION}-x64.tar.gz && \
     tar -xzf ${PAGESPEED_VERSION}-x64.tar.gz && \
     rm ${PAGESPEED_VERSION}-x64.tar.gz && \
-    mkdir -p /var/ngx_pagespeed_cache
-
-# compile nginx
-WORKDIR ${USR_SRC_NGINX}
-RUN sh ./configure \
+    mkdir -p /var/cache/ngx_pagespeed && \
+    # compile nginx
+    cd ${USR_SRC_NGINX} && \
+    sh ./configure \
     --conf-path=/etc/nginx/nginx.conf \
     --sbin-path=/usr/sbin/nginx \
     --pid-path=/var/run/nginx.pid \
@@ -161,10 +167,9 @@ RUN sh ./configure \
     --add-module=${USR_SRC_NGINX_MODS}/brotli \
     --add-module=${USR_SRC_NGINX_MODS}/fancyindex && \
     make && \
-    make install
-
-# cleanup
-RUN apt-get autoclean -yqq && \
+    make install && \
+    # cleanup
+    apt-get autoclean -yqq && \
     apt-get autoremove -yqq && \
     rm -rf ${USR_SRC_NGINX} && \
     rm -rf /var/lib/apt/lists/* && \
