@@ -4,29 +4,29 @@
 
 <h2>Environment variables</h2>
 
-| Name                 | Value                  |
-| -------------------- | ---------------------- |
-| USR_SRC              | /usr/src               |
-| USR_SRC_NGINX        | /usr/src/nginx         |
-| USR_SRC_NGINX_MODS   | /usr/src/nginx/modules |
-| NGINX_VERSION        | 1.15.2                 |
-| NJS_VERSION          | 0.2.3                  |
-| CACHE_PURGE_VERSION  | 2.3                    |
-| HEADERS_MORE_VERSION | 0.33                   |
-| OPENSSL_VERSION      | 1.1.1-pre9             |
-| PAGESPEED_VERSION    | 1.13.35.2              |
-| PAGESPEED_RELEASE    | stable                 |
+| Name               | Value                  |
+| ------------------ | ---------------------- |
+| USR_SRC            | /usr/src               |
+| USR_SRC_NGINX      | /usr/src/nginx         |
+| USR_SRC_NGINX_MODS | /usr/src/nginx/modules |
+| NGINX_VERSION      | 1.15.3                 |
+| OPENSSL_VERSION    | 1.1.1-pre9             |
+| PAGESPEED_VERSION  | 1.13.35.2              |
+| API_KEY            | _your amplify api key_ |
 
 <h2>Additional packages</h2>
 
-- apt-utils
-- apt-transport-https
-- aptitude
-- autoconf
-- autotools-dev
-- build-essential
-- ca-certificates
-- curl
+- aria2
+- libbrotli-dev
+- libmaxminddb0
+- libmaxminddb-dev
+- libpcre3
+- libpcre3-dev
+- mmdb-bin
+- uuid-dev
+- zlibc
+- zlib1g
+- zlib1g-dev
 
 <h2>Volumes</h2>
 
