@@ -12,7 +12,6 @@
 | NGINX_VERSION      | 1.15.3                 |
 | OPENSSL_VERSION    | 1.1.1-pre9             |
 | PAGESPEED_VERSION  | 1.13.35.2              |
-| API_KEY            | _your amplify api key_ |
 
 <h2>Additional packages</h2>
 
