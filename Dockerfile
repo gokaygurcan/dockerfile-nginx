@@ -96,10 +96,6 @@ RUN wget -q https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz && 
     tar -xzf vozlt-nginx-module-sysguard-*.tar.gz && \
     rm vozlt-nginx-module-sysguard-*.tar.gz && \
     mv vozlt-nginx-module-sysguard-* sysguard && \
-    aria2c -q https://github.com/slact/nchan/tarball/master && \
-    tar -xzf slact-nchan-*.tar.gz && \
-    rm slact-nchan-*.tar.gz && \
-    mv slact-nchan-* nchan && \
     aria2c -q https://github.com/eustas/ngx_brotli/tarball/master && \
     tar -xzf eustas-ngx_brotli-*.tar.gz && \
     rm eustas-ngx_brotli-*.tar.gz && \
@@ -161,7 +157,6 @@ RUN sh ./configure \
     --add-module=${USR_SRC_NGINX_MODS}/headers-more \
     --add-module=${USR_SRC_NGINX_MODS}/cache-purge \
     --add-module=${USR_SRC_NGINX_MODS}/testcookie \
-    --add-module=${USR_SRC_NGINX_MODS}/nchan \
     --add-module=${USR_SRC_NGINX_MODS}/sysguard \
     --add-module=${USR_SRC_NGINX_MODS}/brotli \
     --add-module=${USR_SRC_NGINX_MODS}/fancyindex && \
