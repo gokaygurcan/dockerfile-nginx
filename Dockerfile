@@ -8,8 +8,8 @@ ENV DEBIAN_FRONTEND="noninteractive" \
     USR_SRC=/usr/src \
     USR_SRC_NGINX=/usr/src/nginx \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
-    NGINX_VERSION=1.15.6 \
-    OPENSSL_VERSION=1.1.1 \
+    NGINX_VERSION=1.15.7 \
+    OPENSSL_VERSION=1.1.1a \
     PAGESPEED_VERSION=1.13.35.2
 
 USER root
@@ -192,5 +192,7 @@ VOLUME [ "/etc/nginx", "/var/log/nginx", "/var/www", "/etc/letsencrypt" ]
 STOPSIGNAL SIGTERM
 
 USER ubuntu
+
+HEALTHCHECK CMD curl -f http://localhost/ || exit 1
 
 CMD [ "sudo", "nginx", "-g", "daemon off;" ]

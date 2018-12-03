@@ -9,8 +9,8 @@
 | USR_SRC            | /usr/src               |
 | USR_SRC_NGINX      | /usr/src/nginx         |
 | USR_SRC_NGINX_MODS | /usr/src/nginx/modules |
-| NGINX_VERSION      | 1.15.6                 |
-| OPENSSL_VERSION    | 1.1.1                  |
+| NGINX_VERSION      | 1.15.7                 |
+| OPENSSL_VERSION    | 1.1.1a                 |
 | PAGESPEED_VERSION  | 1.13.35.2              |
 
 <h2>Additional packages</h2>
@@ -60,8 +60,9 @@ docker pull gokaygurcan/nginx
 To run an NGINX container
 
 ```bash
-docker volume create nginx
-docker run --rm --name nginx -p 80:80 -p 443:443 -v nginx:/etc/nginx gokaygurcan/nginx
+git clone https://github.com/gokaygurcan/dockerfile-nginx.git
+docker run --rm -d --name nginx -p 80:80 -p 443:443 -v `pwd`/dockerfile-nginx/docker/etc/nginx:/etc/nginx gokaygurcan/nginx
+curl -i http://localhost
 ```
 
 ---
