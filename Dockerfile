@@ -2,7 +2,16 @@
 
 FROM gokaygurcan/ubuntu:latest
 
-LABEL maintainer="Gökay Gürcan <docker@gokaygurcan.com>"
+# metadata
+LABEL maintainer = "Gökay Gürcan <docker@gokaygurcan.com>"
+LABEL com.gokaygurcan.project.name = "dockerfile-nginx"
+LABEL com.gokaygurcan.project.version = "1.3.1"
+LABEL org.label-schema.name = "dockerfile-nginx"
+LABEL org.label-schema.description = "NGINX with useful modules."
+LABEL org.label-schema.vcs-url = "https://github.com/gokaygurcan/dockerfile-nginx"
+LABEL org.label-schema.vendor = "gokaygurcan"
+LABEL org.label-schema.version = "1.3.1"
+LABEL org.label-schema.schema-version = "1.0"
 
 ENV DEBIAN_FRONTEND="noninteractive" \
     USR_SRC=/usr/src \
