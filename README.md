@@ -9,7 +9,7 @@
 | USR_SRC            | /usr/src               |
 | USR_SRC_NGINX      | /usr/src/nginx         |
 | USR_SRC_NGINX_MODS | /usr/src/nginx/modules |
-| NGINX_VERSION      | 1.15.7                 |
+| NGINX_VERSION      | 1.15.8                 |
 | OPENSSL_VERSION    | 1.1.1a                 |
 | PAGESPEED_VERSION  | 1.13.35.2              |
 
