@@ -51,21 +51,16 @@ RUN set -ex && \
     make install && \
     echo '/usr/local/lib' | tee -a /etc/ld.so.conf.d/geoip.conf && \
     ldconfig && \
+    # download latest geolite databases
     mkdir -p /usr/local/share/GeoIP && \
     cd /usr/local/share/GeoIP && \
-    rm -rf ./* && \
-    wget -q http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz && \
-    gzip -d GeoIP.dat.gz && \
-    mv GeoIP.dat geolite-country.dat && \
-    wget -q http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz && \
-    gzip -d GeoLiteCity.dat.gz && \
-    mv GeoLiteCity.dat geolite-city.dat && \
-    wget -q http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz && \
+    rm -rf ./*  && \
+    wget -q https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz && \
     tar -xzf GeoLite2-Country.tar.gz && \
     rm GeoLite2-Country.tar.gz && \
     mv GeoLite2-Country_*/GeoLite2-Country.mmdb geolite2-country.mmdb && \
-    rm -rf GeoLite2-Country_* && \
-    wget -q http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz && \
+    rm -rf GeoLite2-Country_*  && \
+    wget -q https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz && \
     tar -xzf GeoLite2-City.tar.gz && \
     rm GeoLite2-City.tar.gz && \
     mv GeoLite2-City_*/GeoLite2-City.mmdb geolite2-city.mmdb && \
