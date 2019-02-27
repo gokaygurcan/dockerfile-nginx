@@ -3,21 +3,13 @@
 FROM gokaygurcan/ubuntu:latest
 
 # metadata
-LABEL maintainer = "Gökay Gürcan <docker@gokaygurcan.com>"
-LABEL com.gokaygurcan.project.name = "dockerfile-nginx"
-LABEL com.gokaygurcan.project.version = "1.3.2"
-LABEL org.label-schema.name = "dockerfile-nginx"
-LABEL org.label-schema.description = "NGINX with useful modules."
-LABEL org.label-schema.vcs-url = "https://github.com/gokaygurcan/dockerfile-nginx"
-LABEL org.label-schema.vendor = "gokaygurcan"
-LABEL org.label-schema.version = "1.3.2"
-LABEL org.label-schema.schema-version = "1.0"
+LABEL maintainer "Gökay Gürcan <docker@gokaygurcan.com>"
 
 ENV DEBIAN_FRONTEND="noninteractive" \
     USR_SRC=/usr/src \
     USR_SRC_NGINX=/usr/src/nginx \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
-    NGINX_VERSION=1.15.8 \
+    NGINX_VERSION=1.15.9 \
     OPENSSL_VERSION=1.1.1a \
     PAGESPEED_VERSION=1.13.35.2
 
@@ -30,8 +22,6 @@ RUN set -ex && \
     apt-get install -yqq --no-install-recommends --no-install-suggests \
     aria2 \
     libbrotli-dev \
-    libmaxminddb0 \
-    libmaxminddb-dev \
     libpcre3 \
     libpcre3-dev \
     mmdb-bin \
@@ -39,32 +29,7 @@ RUN set -ex && \
     zlibc \
     zlib1g \
     zlib1g-dev && \
-    # download and compile geoip: geolite2-city.mmdb, geolite2-country.mmdb, geolite-city.dat and geolite-country.dat
     cd ${USR_SRC} && \
-    wget -q http://geolite.maxmind.com/download/geoip/api/c/GeoIP.tar.gz && \
-    tar -zxf GeoIP.tar.gz && \
-    rm GeoIP.tar.gz && \
-    mv GeoIP-* GeoIP && \
-    cd GeoIP && \
-    sh ./configure && \
-    make && \
-    make install && \
-    echo '/usr/local/lib' | tee -a /etc/ld.so.conf.d/geoip.conf && \
-    ldconfig && \
-    # download latest geolite databases
-    mkdir -p /usr/local/share/GeoIP && \
-    cd /usr/local/share/GeoIP && \
-    rm -rf ./*  && \
-    wget -q https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz && \
-    tar -xzf GeoLite2-Country.tar.gz && \
-    rm GeoLite2-Country.tar.gz && \
-    mv GeoLite2-Country_*/GeoLite2-Country.mmdb geolite2-country.mmdb && \
-    rm -rf GeoLite2-Country_*  && \
-    wget -q https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz && \
-    tar -xzf GeoLite2-City.tar.gz && \
-    rm GeoLite2-City.tar.gz && \
-    mv GeoLite2-City_*/GeoLite2-City.mmdb geolite2-city.mmdb && \
-    rm -rf GeoLite2-City_* && \
     # download nginx
     cd ${USR_SRC} && \
     wget -q https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
@@ -144,7 +109,6 @@ RUN set -ex && \
     --with-file-aio \
     --with-http_auth_request_module \
     --with-http_dav_module \
-    --with-http_geoip_module \
     --with-http_gunzip_module \
     --with-http_gzip_static_module \
     --with-http_random_index_module \
