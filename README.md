@@ -17,8 +17,6 @@
 
 - aria2
 - libbrotli-dev
-- libmaxminddb0
-- libmaxminddb-dev
 - libpcre3
 - libpcre3-dev
 - mmdb-bin
