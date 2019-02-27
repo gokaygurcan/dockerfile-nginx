@@ -18,6 +18,7 @@
 <h2>conf.d/</h2>
 
 - gzip.conf
+- open_file.conf
 - resolver.conf
 - security_headers.conf
 - ssl.conf
@@ -27,8 +28,6 @@
 
 - brotli.conf
 - fancyindex.conf
-- geoip.conf
-- geoip2.conf
 - mail.conf
 - more_headers.conf
 - pagespeed.conf
