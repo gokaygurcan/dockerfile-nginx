@@ -3,21 +3,21 @@
 FROM gokaygurcan/ubuntu:latest
 
 # metadata
-LABEL maintainer = "Gökay Gürcan <docker@gokaygurcan.com>"
-LABEL com.gokaygurcan.project.name = "dockerfile-nginx"
-LABEL com.gokaygurcan.project.version = "1.3.2"
-LABEL org.label-schema.name = "dockerfile-nginx"
-LABEL org.label-schema.description = "NGINX with useful modules."
-LABEL org.label-schema.vcs-url = "https://github.com/gokaygurcan/dockerfile-nginx"
-LABEL org.label-schema.vendor = "gokaygurcan"
-LABEL org.label-schema.version = "1.3.2"
-LABEL org.label-schema.schema-version = "1.0"
+LABEL maintainer "Gökay Gürcan <docker@gokaygurcan.com>"
+LABEL com.gokaygurcan.project.name "dockerfile-nginx"
+LABEL com.gokaygurcan.project.version "1.15.9"
+LABEL org.label-schema.name "dockerfile-nginx"
+LABEL org.label-schema.description "NGINX with useful modules."
+LABEL org.label-schema.vcs-url "https://github.com/gokaygurcan/dockerfile-nginx"
+LABEL org.label-schema.vendor "gokaygurcan"
+LABEL org.label-schema.version "1.15.9"
+LABEL org.label-schema.schema-version "1.0"
 
 ENV DEBIAN_FRONTEND="noninteractive" \
     USR_SRC=/usr/src \
     USR_SRC_NGINX=/usr/src/nginx \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
-    NGINX_VERSION=1.15.8 \
+    NGINX_VERSION=1.15.9 \
     OPENSSL_VERSION=1.1.1a \
     PAGESPEED_VERSION=1.13.35.2
 
