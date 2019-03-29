@@ -9,8 +9,8 @@
 | USR_SRC            | /usr/src               |
 | USR_SRC_NGINX      | /usr/src/nginx         |
 | USR_SRC_NGINX_MODS | /usr/src/nginx/modules |
-| NGINX_VERSION      | 1.15.9                 |
-| OPENSSL_VERSION    | 1.1.1a                 |
+| NGINX_VERSION      | 1.15.10                |
+| OPENSSL_VERSION    | 1.1.1b                 |
 | PAGESPEED_VERSION  | 1.13.35.2              |
 
 <h2>Additional packages</h2>
