@@ -15,6 +15,7 @@ before_script:
 script:
   - docker build --rm -t gokaygurcan/nginx:test .
   - docker run --rm -d --name nginx -p 80:80 gokaygurcan/nginx:test
+  - docker exec nginx nginx -V
   - curl -I http://localhost:80
 
 notifications:

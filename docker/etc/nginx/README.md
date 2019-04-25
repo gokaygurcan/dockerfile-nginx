@@ -10,7 +10,7 @@
 | /etc/nginx/koi-win                 | Character set                            |
 | /etc/nginx/mime.types              | MIME types                               |
 | /etc/nginx/nginx.conf              | Main configuration file                  |
-| /etc/nginx/sites-enabled/\*        | Virtual host configuration files         |
+| /etc/nginx/sites-enabled/\*\*/*    | Virtual host configuration files         |
 | /etc/nginx/win-utf                 | Character set                            |
 
 ---
@@ -35,8 +35,11 @@
 
 <h2>sites-enabled/</h2>
 
-- 000-default.conf
-- 010-example.com.conf
-- 015-sub1.example.com.conf
-- 016-sub2.example.com.conf
-- 020-example.net.conf
+- localhost/
+  - default.conf
+- com.example/
+  - default.conf
+  - subdomain1.conf
+  - subdomain2.conf
+- net.example/
+  - default.conf

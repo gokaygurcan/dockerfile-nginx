@@ -29,7 +29,29 @@ RUN set -ex && \
     zlibc \
     zlib1g \
     zlib1g-dev && \
-    cd ${USR_SRC} && \
+    # maxmind geoip2
+    cd /tmp && \
+    wget -q https://github.com/maxmind/libmaxminddb/releases/download/1.3.2/libmaxminddb-1.3.2.tar.gz && \
+    tar -xzf libmaxminddb-*.tar.gz && \
+    rm libmaxminddb-*.tar.gz && \
+    cd libmaxminddb-* && \
+    ./configure && \
+    make && \
+    make check && \
+    make install && \
+    ldconfig && \
+    mkdir -p /usr/local/share/geoip && \
+    cd /usr/local/share/geoip && \
+    wget -q https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz && \
+    tar -xzf GeoLite2-City.tar.gz && \
+    mv GeoLite2-City_*/GeoLite2-City.mmdb /usr/local/share/geoip/geolite2-city.mmdb && \
+    rm -rf GeoLite2-City_* && \
+    rm -rf GeoLite2-City.tar.gz && \
+    wget -q https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz && \
+    tar -xzf GeoLite2-Country.tar.gz && \
+    mv GeoLite2-Country_*/GeoLite2-Country.mmdb /usr/local/share/geoip/geolite2-country.mmdb && \
+    rm -rf GeoLite2-Country_* && \
+    rm -rf GeoLite2-Country.tar.gz && \
     # download nginx
     cd ${USR_SRC} && \
     wget -q https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
@@ -49,6 +71,11 @@ RUN set -ex && \
     tar -xzf nginx-njs-*.tar.gz && \
     rm nginx-njs-*.tar.gz && \
     mv nginx-njs-* njs && \
+    # geoip2
+    aria2c -q https://github.com/leev/ngx_http_geoip2_module/tarball/master && \
+    tar -xzf leev-ngx_http_geoip2_module-*.tar.gz && \
+    rm leev-ngx_http_geoip2_module-*.tar.gz && \
+    mv leev-ngx_http_geoip2_module-* geoip2 && \
     # openresty/headers-more-nginx-module
     aria2c -q https://github.com/openresty/headers-more-nginx-module/tarball/master && \
     tar -xzf openresty-headers-more-nginx-module-*.tar.gz && \
@@ -128,6 +155,7 @@ RUN set -ex && \
     --without-http_scgi_module \
     --add-module=${USR_SRC_NGINX_MODS}/njs/nginx \
     --add-module=${USR_SRC_NGINX_MODS}/pagespeed \
+    --add-module=${USR_SRC_NGINX_MODS}/geoip2 \
     --add-module=${USR_SRC_NGINX_MODS}/headers-more \
     --add-module=${USR_SRC_NGINX_MODS}/cache-purge \
     --add-module=${USR_SRC_NGINX_MODS}/testcookie \
@@ -136,13 +164,15 @@ RUN set -ex && \
     --add-module=${USR_SRC_NGINX_MODS}/fancyindex && \
     make && \
     make install && \
+    echo "✓" | tee /usr/local/nginx/html/index.html && \
     # cleanup
+    rm /etc/nginx/*.default && \
     apt-get autoclean -yqq && \
     apt-get autoremove -yqq && \
     rm -rf ${USR_SRC_NGINX} && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -rf /tmp/* && \
-    rm -rf /var/tmp/*
+    rm -rf /var/lib/{apt,dpkg,cache,log}/ && \
+    rm -rf /var/tmp/* && \
+    rm -rf /tmp/* 
 
 WORKDIR /etc/nginx
 
