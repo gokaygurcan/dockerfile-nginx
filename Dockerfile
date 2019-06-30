@@ -9,7 +9,7 @@ ENV DEBIAN_FRONTEND="noninteractive" \
     USR_SRC=/usr/src \
     USR_SRC_NGINX=/usr/src/nginx \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
-    NGINX_VERSION=1.17.0 \
+    NGINX_VERSION=1.17.1 \
     OPENSSL_VERSION=1.1.1c \
     PAGESPEED_VERSION=1.13.35.2 \
     GEOIP2_VERSION=1.3.2
@@ -173,7 +173,7 @@ RUN set -ex && \
     rm -rf ${USR_SRC_NGINX} && \
     rm -rf /var/lib/{apt,dpkg,cache,log}/ && \
     rm -rf /var/tmp/* && \
-    rm -rf /tmp/* 
+    rm -rf /tmp/*
 
 WORKDIR /etc/nginx
 
