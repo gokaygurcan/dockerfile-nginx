@@ -66,7 +66,3 @@ git clone https://github.com/gokaygurcan/dockerfile-nginx.git
 docker run --rm -d --name nginx -p 80:80 -p 443:443 -v `pwd`/dockerfile-nginx/docker/etc/nginx:/etc/nginx gokaygurcan/nginx
 curl -i http://localhost
 ```
-
----
-
-[![Buy me a coffee](https://www.buymeacoffee.com/assets/img/guidelines/download-assets-sm-2.svg)](https://www.buymeacoffee.com/gokaygurcan)
