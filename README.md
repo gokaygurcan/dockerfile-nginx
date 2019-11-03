@@ -12,10 +12,10 @@
 
 | Variable           | Version                |
 | ------------------ | ---------------------- |
-| NGINX_VERSION      | 1.17.4                 |
+| NGINX_VERSION      | 1.17.5                 |
 | OPENSSL_VERSION    | 1.1.1d                 |
 | PAGESPEED_VERSION  | 1.13.35.2              |
-| GEOIP2_VERSION     | 1.3.2                  |
+| GEOIP2_VERSION     | 1.4.2                  |
 
 <h2>Additional packages</h2>
 

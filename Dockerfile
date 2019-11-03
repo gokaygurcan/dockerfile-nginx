@@ -9,10 +9,10 @@ ENV DEBIAN_FRONTEND="noninteractive" \
     USR_SRC=/usr/src \
     USR_SRC_NGINX=/usr/src/nginx \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
-    NGINX_VERSION=1.17.4 \
+    NGINX_VERSION=1.17.5 \
     OPENSSL_VERSION=1.1.1d \
     PAGESPEED_VERSION=1.13.35.2 \
-    GEOIP2_VERSION=1.3.2
+    GEOIP2_VERSION=1.4.2
 
 USER root
 
