@@ -12,7 +12,8 @@ ENV DEBIAN_FRONTEND="noninteractive" \
     NGINX_VERSION=1.17.6 \
     OPENSSL_VERSION=1.1.1d \
     PAGESPEED_VERSION=1.13.35.2 \
-    GEOIP2_VERSION=1.4.2
+    GEOIP2_VERSION=1.4.2 \
+    MAXMIND_LICENSE_KEY=
 
 USER root
 
@@ -43,12 +44,12 @@ RUN set -ex && \
     ldconfig && \
     mkdir -p /usr/local/share/geoip && \
     cd /usr/local/share/geoip && \
-    wget -q https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz && \
+    wget -q https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&date=20191224&suffix=tar.gz&license_key=${MAXMIND_LICENSE_KEY} && \
     tar -xzf GeoLite2-City.tar.gz && \
     mv GeoLite2-City_*/GeoLite2-City.mmdb /usr/local/share/geoip/geolite2-city.mmdb && \
     rm -rf GeoLite2-City_* && \
     rm -rf GeoLite2-City.tar.gz && \
-    wget -q https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz && \
+    wget -q https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&date=20191224&suffix=tar.gz&license_key=${MAXMIND_LICENSE_KEY} && \
     tar -xzf GeoLite2-Country.tar.gz && \
     mv GeoLite2-Country_*/GeoLite2-Country.mmdb /usr/local/share/geoip/geolite2-country.mmdb && \
     rm -rf GeoLite2-Country_* && \
@@ -72,7 +73,7 @@ RUN set -ex && \
     tar -xzf nginx-njs-*.tar.gz && \
     rm nginx-njs-*.tar.gz && \
     mv nginx-njs-* njs && \
-    # geoip2
+    # leev/ngx_http_geoip2_module
     aria2c -q https://github.com/leev/ngx_http_geoip2_module/tarball/master && \
     tar -xzf leev-ngx_http_geoip2_module-*.tar.gz && \
     rm leev-ngx_http_geoip2_module-*.tar.gz && \
@@ -133,12 +134,15 @@ RUN set -ex && \
     --lock-path=/var/run/nginx.lock \
     --error-log-path=/var/log/nginx/error.log \
     --http-log-path=/var/log/nginx/access.log \
+    --with-cc-opt=-Wno-error \
     --with-http_addition_module \
     --with-file-aio \
     --with-http_auth_request_module \
     --with-http_dav_module \
+    --with-http_flv_module \
     --with-http_gunzip_module \
     --with-http_gzip_static_module \
+    --with-http_mp4_module \
     --with-http_random_index_module \
     --with-http_realip_module \
     --with-http_secure_link_module \
@@ -148,6 +152,11 @@ RUN set -ex && \
     --with-http_sub_module \
     --with-http_v2_module \
     --with-openssl=${USR_SRC_NGINX_MODS}/openssl \
+    --with-compat \
+    --with-mail \
+    --with-mail_ssl_module \
+    --with-stream_ssl_preread_module \
+    --with-stream_realip_module \
     --with-threads \
     --with-stream \
     --with-stream_ssl_module \
