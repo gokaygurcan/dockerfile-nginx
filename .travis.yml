@@ -13,7 +13,7 @@ before_script:
   - docker info
 
 script:
-  - docker build --rm --build-arg $MAXMIND_LICENSE_KEY -t gokaygurcan/nginx:test .
+  - docker build --rm --build-arg MAXMIND_LICENSE_KEY=$MAXMIND_LICENSE_KEY -t gokaygurcan/nginx:test .
   - docker run --rm -d --name nginx -p 80:80 gokaygurcan/nginx:test
   - docker exec nginx nginx -V
   - curl -I http://localhost:80
