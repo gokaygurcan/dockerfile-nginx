@@ -12,7 +12,7 @@
 
 | Variable           | Version                |
 | ------------------ | ---------------------- |
-| NGINX_VERSION      | 1.17.6                 |
+| NGINX_VERSION      | 1.17.7                 |
 | OPENSSL_VERSION    | 1.1.1d                 |
 | PAGESPEED_VERSION  | 1.13.35.2              |
 | GEOIP2_VERSION     | 1.4.2                  |
