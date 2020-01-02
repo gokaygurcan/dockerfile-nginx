@@ -23,10 +23,10 @@ jobs:
 
       - name: Build image
         if: success()
-        run: docker build --file Dockerfile --build-arg MAXMIND_LICENSE_KEY=${{ secrets.MAXMIND_LICENSE_KEY }} --tag gokaygurcan/dockerfile-nginx:latest .
+        run: docker build --file Dockerfile --build-arg MAXMIND_LICENSE_KEY=${{ secrets.MAXMIND_LICENSE_KEY }} --tag gokaygurcan/nginx:latest .
 
       - name: Push to Docker registry
         if: success()
         uses: actions-hub/docker@master
         with:
-          args: push gokaygurcan/dockerfile-nginx:latest
+          args: push gokaygurcan/nginx:latest
