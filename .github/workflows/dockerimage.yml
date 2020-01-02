@@ -23,7 +23,7 @@ jobs:
 
       - name: Build image
         if: success()
-        run: docker build --file Dockerfile --build-arg LICENSE_KEY=${{ secrets.LICENSE_KEY }} --tag gokaygurcan/dockerfile-nginx:latest .
+        run: docker build --file Dockerfile --build-arg MAXMIND_LICENSE_KEY=${{ secrets.MAXMIND_LICENSE_KEY }} --tag gokaygurcan/dockerfile-nginx:latest .
 
       - name: Push to Docker registry
         if: success()
