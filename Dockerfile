@@ -10,7 +10,7 @@ ENV DEBIAN_FRONTEND="noninteractive" \
     USR_SRC=/usr/src \
     USR_SRC_NGINX=/usr/src/nginx \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
-    NGINX_VERSION=1.17.7 \
+    NGINX_VERSION=1.17.8 \
     OPENSSL_VERSION=1.1.1d \
     PAGESPEED_VERSION=1.13.35.2 \
     GEOIP2_VERSION=1.4.2 \
@@ -45,13 +45,13 @@ RUN set -ex && \
     make install && \
     ldconfig && \
     mkdir -p /usr/local/share/geoip && \
-    cd /usr/local/share/geoip && \
-    wget -q -O GeoLite2-City.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&date=20191224&suffix=tar.gz&license_key=${MAXMIND_LICENSE_KEY}" && \
+    cd /usr/local/share/geoip && \ 
+    wget -q -O GeoLite2-City.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&date=20200211&suffix=tar.gz&license_key=${MAXMIND_LICENSE_KEY}" && \
     tar -xzf GeoLite2-City.tar.gz && \
     mv GeoLite2-City_*/GeoLite2-City.mmdb /usr/local/share/geoip/geolite2-city.mmdb && \
     rm -rf GeoLite2-City_* && \
     rm -rf GeoLite2-City.tar.gz && \
-    wget -q -O GeoLite2-Country.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&date=20191224&suffix=tar.gz&license_key=${MAXMIND_LICENSE_KEY}" && \
+    wget -q -O GeoLite2-Country.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&date=20200211&suffix=tar.gz&license_key=${MAXMIND_LICENSE_KEY}" && \
     tar -xzf GeoLite2-Country.tar.gz && \
     mv GeoLite2-Country_*/GeoLite2-Country.mmdb /usr/local/share/geoip/geolite2-country.mmdb && \
     rm -rf GeoLite2-Country_* && \
