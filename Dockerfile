@@ -46,12 +46,12 @@ RUN set -ex && \
     ldconfig && \
     mkdir -p /usr/local/share/geoip && \
     cd /usr/local/share/geoip && \ 
-    wget -q -O GeoLite2-City.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&date=20200211&suffix=tar.gz&license_key=${MAXMIND_LICENSE_KEY}" && \
+    wget -q -O GeoLite2-City.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&date=${MAXMIND_DATABASE_DATE}&suffix=tar.gz&license_key=${MAXMIND_LICENSE_KEY}" && \
     tar -xzf GeoLite2-City.tar.gz && \
     mv GeoLite2-City_*/GeoLite2-City.mmdb /usr/local/share/geoip/geolite2-city.mmdb && \
     rm -rf GeoLite2-City_* && \
     rm -rf GeoLite2-City.tar.gz && \
-    wget -q -O GeoLite2-Country.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&date=20200211&suffix=tar.gz&license_key=${MAXMIND_LICENSE_KEY}" && \
+    wget -q -O GeoLite2-Country.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&date=${MAXMIND_DATABASE_DATE}&suffix=tar.gz&license_key=${MAXMIND_LICENSE_KEY}" && \
     tar -xzf GeoLite2-Country.tar.gz && \
     mv GeoLite2-Country_*/GeoLite2-Country.mmdb /usr/local/share/geoip/geolite2-country.mmdb && \
     rm -rf GeoLite2-Country_* && \
