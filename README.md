@@ -1,6 +1,6 @@
 # NGINX
 
-[![Docker Build Status](https://img.shields.io/docker/build/gokaygurcan/nginx.svg?style=for-the-badge&logo=docker&colorA=22b8eb)](https://hub.docker.com/r/gokaygurcan/nginx/) [![Travis CI](https://img.shields.io/travis/gokaygurcan/dockerfile-nginx.svg?style=for-the-badge&logo=travis&colorA=39a85b)](https://travis-ci.org/gokaygurcan/dockerfile-nginx) [![MicroBadger](https://img.shields.io/microbadger/image-size/gokaygurcan/nginx.svg?style=for-the-badge&colorA=337ab7&colorB=252528)](https://microbadger.com/images/gokaygurcan/nginx)
+![Deploy to Docker Hub](https://github.com/gokaygurcan/dockerfile-nginx/workflows/Deploy%20to%20Docker%20Hub/badge.svg?branch=master) ![MicroBadger](https://img.shields.io/microbadger/image-size/gokaygurcan/nginx.svg?style=flat&colorA=337ab7&colorB=252528) 
 
 <h2>Environment variables</h2>
 
@@ -13,7 +13,7 @@
 | Variable           | Version                |
 | ------------------ | ---------------------- |
 | NGINX_VERSION      | 1.17.8                 |
-| OPENSSL_VERSION    | 1.1.1d                 |
+| OPENSSL_VERSION    | 1.1.1e                 |
 | PAGESPEED_VERSION  | 1.13.35.2              |
 | GEOIP2_VERSION     | 1.4.2                  |
 
