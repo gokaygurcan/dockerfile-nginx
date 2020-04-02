@@ -24,12 +24,22 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Get Short SHA
+        id: vars
+        run: echo ::set-output name=sha::$(echo ${GITHUB_REF:7})
+
       - name: Build image
         if: success()
-        run: docker build --file Dockerfile --build-arg MAXMIND_LICENSE_KEY=${{ secrets.MAXMIND_LICENSE_KEY }} --tag gokaygurcan/nginx:latest .
+        run: docker build --file Dockerfile --build-arg MAXMIND_LICENSE_KEY=${{ secrets.MAXMIND_LICENSE_KEY }} --tag gokaygurcan/nginx:${{ steps.vars.outputs.sha }} --tag gokaygurcan/nginx:latest .
 
-      - name: Push to Docker registry
-        if: success()
+      - name: Push to Docker registry (latest)
+        if: 'github.event.pull_request.merged == true'
         uses: actions-hub/docker@master
         with:
           args: push gokaygurcan/nginx:latest
+
+      - name: Push to Docker registry (sha)
+        if: 'github.event.pull_request.merged == true'
+        uses: actions-hub/docker@master
+        with:
+          args: push gokaygurcan/nginx:${{ steps.vars.outputs.sha }}
