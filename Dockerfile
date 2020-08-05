@@ -153,6 +153,7 @@ RUN set -ex && \
     --with-http_stub_status_module \
     --with-http_sub_module \
     --with-http_v2_module \
+    --with-ipv6 \
     --with-openssl=${USR_SRC_NGINX_MODS}/openssl \
     --with-compat \
     --with-mail \
