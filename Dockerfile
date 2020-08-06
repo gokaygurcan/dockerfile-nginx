@@ -13,7 +13,7 @@ ENV DEBIAN_FRONTEND="noninteractive" \
     NGINX_VERSION=1.19.1 \
     OPENSSL_VERSION=1.1.1g \
     PAGESPEED_VERSION=1.13.35.2 \
-    GEOIP2_VERSION=1.4.2 \
+    LIBMAXMINDDB_VERSION=1.4.3 \
     MAXMIND_LICENSE_KEY=$MAXMIND_LICENSE_KEY
 
 USER root
@@ -35,7 +35,7 @@ RUN set -ex && \
     zlib1g-dev && \
     # maxmind geoip2
     cd /tmp && \
-    wget -q https://github.com/maxmind/libmaxminddb/releases/download/${GEOIP2_VERSION}/libmaxminddb-${GEOIP2_VERSION}.tar.gz && \
+    wget -q https://github.com/maxmind/libmaxminddb/releases/download/${LIBMAXMINDDB_VERSION}/libmaxminddb-${LIBMAXMINDDB_VERSION}.tar.gz && \
     tar -xzf libmaxminddb-*.tar.gz && \
     rm libmaxminddb-*.tar.gz && \
     cd libmaxminddb-* && \
