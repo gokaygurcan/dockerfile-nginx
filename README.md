@@ -4,18 +4,18 @@
 
 <h2>Environment variables</h2>
 
-| Variable           | Path                   |
-| ------------------ | ---------------------- |
-| USR_SRC            | /usr/src               |
-| USR_SRC_NGINX      | /usr/src/nginx         |
-| USR_SRC_NGINX_MODS | /usr/src/nginx/modules |
+| Variable             | Path                   |
+| -------------------- | ---------------------- |
+| USR_SRC              | /usr/src               |
+| USR_SRC_NGINX        | /usr/src/nginx         |
+| USR_SRC_NGINX_MODS   | /usr/src/nginx/modules |
 
-| Variable           | Version                |
-| ------------------ | ---------------------- |
-| NGINX_VERSION      | 1.19.1                 |
-| OPENSSL_VERSION    | 1.1.1g                 |
-| PAGESPEED_VERSION  | 1.13.35.2              |
-| GEOIP2_VERSION     | 1.4.2                  |
+| Variable             | Version                |
+| -------------------- | ---------------------- |
+| NGINX_VERSION        | 1.19.1                 |
+| OPENSSL_VERSION      | 1.1.1g                 |
+| PAGESPEED_VERSION    | 1.13.35.2              |
+| LIBMAXMINDDB_VERSION | 1.4.3                  |
 
 <h2>Additional packages</h2>
 
