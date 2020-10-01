@@ -10,8 +10,8 @@ ENV DEBIAN_FRONTEND="noninteractive" \
     USR_SRC=/usr/src \
     USR_SRC_NGINX=/usr/src/nginx \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
-    NGINX_VERSION=1.19.2 \
-    OPENSSL_VERSION=1.1.1g \
+    NGINX_VERSION=1.19.3 \
+    OPENSSL_VERSION=1.1.1h \
     PAGESPEED_VERSION=1.13.35.2 \
     LIBMAXMINDDB_VERSION=1.4.3 \
     MAXMIND_LICENSE_KEY=$MAXMIND_LICENSE_KEY
@@ -19,11 +19,15 @@ ENV DEBIAN_FRONTEND="noninteractive" \
 USER root
 
 RUN set -ex && \
-    # install dependencies
+    # configure apt to always assume Y
+    echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes && \
+    # update package sources
     apt-get update -qq && \
+    # upgrade packages
     apt-get upgrade -yqq && \
+    apt-get dist-upgrade -yqq && \
+    # install packages
     apt-get install -yqq --no-install-recommends --no-install-suggests \
-    aria2 \
     libbrotli-dev \
     libmaxminddb-dev \
     libpcre3 \
@@ -178,7 +182,7 @@ RUN set -ex && \
     make && \
     make install && \
     echo "✓" | tee /usr/local/nginx/html/index.html && \
-    # cleanup
+    # clean up
     rm /etc/nginx/*.default && \
     apt-get autoclean -yqq && \
     apt-get autoremove -yqq && \
