@@ -1,35 +1,48 @@
 # gokaygurcan/dockerfile-nginx
 
-name: Deploy to Docker Hub
+name: 'NGINX'
 
 on:
-   push:
-     branches:
-      - master
-   pull_request:
-     branches:
-      - master
+  push:
+  pull_request:
+    branches:
+    - master
+
+env:
+  GITHUB: ${{ toJson(github) }}
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    
+  nginx:
+    name: 'nginx'
+    runs-on: 'ubuntu-latest'
+    env:
+      CI: true
     steps:
-      - uses: actions/checkout@master
+    - id: 'checkout'
+      name: 'Checkout'
+      uses: 'actions/checkout@v2'
 
-      - name: Login to Docker Hub
-        if: success()
-        uses: actions-hub/docker/login@master
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    - id: 'login'
+      name: 'Login to Docker Hub'
+      uses: 'actions-hub/docker/login@master'
+      if: github.ref == 'refs/heads/master'
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build image
-        if: success()
-        run: docker build --file Dockerfile --build-arg MAXMIND_LICENSE_KEY=${{ secrets.MAXMIND_LICENSE_KEY }} --tag gokaygurcan/nginx:latest .
+    - id: 'build'
+      name: 'Build image'
+      run: |
+        docker build --file Dockerfile --build-arg MAXMIND_LICENSE_KEY=${{ secrets.MAXMIND_LICENSE_KEY }} --tag gokaygurcan/nginx:latest .
 
-      - name: Push to Docker registry
-        if: github.ref == 'refs/heads/master'
-        uses: actions-hub/docker@master
-        with:
-          args: push gokaygurcan/nginx:latest
+    - id: 'test'
+      name: 'Test'
+      run: |
+        docker run --rm gokaygurcan/nginx nginx -V
+
+    - id: 'push'
+      name: 'Push to Docker Registry'
+      uses: 'actions-hub/docker@master'
+      if: github.ref == 'refs/heads/master'
+      with:
+        args: push gokaygurcan/nginx:latest

@@ -1,6 +1,6 @@
 # NGINX
 
-![Deploy to Docker Hub](https://github.com/gokaygurcan/dockerfile-nginx/workflows/Deploy%20to%20Docker%20Hub/badge.svg?branch=master) ![MicroBadger](https://img.shields.io/microbadger/image-size/gokaygurcan/nginx.svg?style=flat&colorA=337ab7&colorB=252528) 
+![Deploy to Docker Hub](https://github.com/gokaygurcan/dockerfile-nginx/workflows/Deploy%20to%20Docker%20Hub/badge.svg?branch=master) ![MicroBadger](https://img.shields.io/microbadger/image-size/gokaygurcan/nginx.svg?style=flat&colorA=337ab7&colorB=252528)
 
 <h2>Environment variables</h2>
 
@@ -12,14 +12,13 @@
 
 | Variable             | Version                |
 | -------------------- | ---------------------- |
-| NGINX_VERSION        | 1.19.2                 |
-| OPENSSL_VERSION      | 1.1.1g                 |
+| NGINX_VERSION        | 1.19.3                 |
+| OPENSSL_VERSION      | 1.1.1h                 |
 | PAGESPEED_VERSION    | 1.13.35.2              |
 | LIBMAXMINDDB_VERSION | 1.4.3                  |
 
 <h2>Additional packages</h2>
 
-- aria2
 - libbrotli-dev
 - libpcre3
 - libpcre3-dev
@@ -63,6 +62,7 @@ To run an NGINX container
 
 ```bash
 git clone https://github.com/gokaygurcan/dockerfile-nginx.git
-docker run --rm -d --name nginx -p 80:80 -p 443:443 -v `pwd`/dockerfile-nginx/docker/etc/nginx:/etc/nginx gokaygurcan/nginx
+cd dockerfile-nginx
+docker run --rm -d --name nginx -p 80:80 -p 443:443 -v `pwd`/docker/etc/nginx:/etc/nginx gokaygurcan/nginx
 curl -i http://localhost
 ```
