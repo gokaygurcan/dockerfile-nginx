@@ -5,7 +5,6 @@ FROM gokaygurcan/ubuntu:latest
 # metadata
 LABEL maintainer "Gökay Gürcan <docker@gokaygurcan.com>"
 
-ARG MAXMIND_LICENSE_KEY
 ENV DEBIAN_FRONTEND="noninteractive" \
     USR_SRC=/usr/src \
     USR_SRC_NGINX=/usr/src/nginx \
@@ -13,8 +12,7 @@ ENV DEBIAN_FRONTEND="noninteractive" \
     NGINX_VERSION=1.19.6 \
     OPENSSL_VERSION=1.1.1i \
     PAGESPEED_VERSION=1.13.35.2 \
-    LIBMAXMINDDB_VERSION=1.4.3 \
-    MAXMIND_LICENSE_KEY=$MAXMIND_LICENSE_KEY
+    LIBMAXMINDDB_VERSION=1.5.0
 
 USER root
 
@@ -48,18 +46,6 @@ RUN set -ex && \
     make check && \
     make install && \
     ldconfig && \
-    mkdir -p /usr/local/share/geoip && \
-    cd /usr/local/share/geoip && \ 
-    wget -q -O GeoLite2-City.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&date=${MAXMIND_DATABASE_DATE}&suffix=tar.gz&license_key=${MAXMIND_LICENSE_KEY}" && \
-    tar -xzf GeoLite2-City.tar.gz && \
-    mv GeoLite2-City_*/GeoLite2-City.mmdb /usr/local/share/geoip/geolite2-city.mmdb && \
-    rm -rf GeoLite2-City_* && \
-    rm -rf GeoLite2-City.tar.gz && \
-    wget -q -O GeoLite2-Country.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Country&date=${MAXMIND_DATABASE_DATE}&suffix=tar.gz&license_key=${MAXMIND_LICENSE_KEY}" && \
-    tar -xzf GeoLite2-Country.tar.gz && \
-    mv GeoLite2-Country_*/GeoLite2-Country.mmdb /usr/local/share/geoip/geolite2-country.mmdb && \
-    rm -rf GeoLite2-Country_* && \
-    rm -rf GeoLite2-Country.tar.gz && \
     # download nginx
     cd ${USR_SRC} && \
     wget -q https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
@@ -202,7 +188,7 @@ RUN openssl dhparam -dsaparam -out /etc/nginx/dhparam.pem 4096
 EXPOSE 80/tcp 443/tcp
 
 # possible folders to map
-VOLUME [ "/etc/nginx", "/var/log/nginx", "/var/www", "/etc/letsencrypt" ]
+VOLUME [ "/etc/nginx", "/var/log/nginx", "/var/www", "/etc/letsencrypt", "/usr/share/GeoIP" ]
 
 STOPSIGNAL SIGTERM
 

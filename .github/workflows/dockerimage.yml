@@ -33,12 +33,14 @@ jobs:
     - id: 'build'
       name: 'Build image'
       run: |
-        docker build --file Dockerfile --build-arg MAXMIND_LICENSE_KEY=${{ secrets.MAXMIND_LICENSE_KEY }} --tag gokaygurcan/nginx:latest .
+        docker build --file Dockerfile --tag gokaygurcan/nginx:latest .
 
     - id: 'test'
       name: 'Test'
       run: |
-        docker run --rm gokaygurcan/nginx nginx -V
+        docker volume create usr-share-geoip
+        docker run --rm --name geoipupdate -v usr-share-geoip:/usr/share/GeoIP -e GEOIPUPDATE_FREQUENCY=0 -e GEOIPUPDATE_ACCOUNT_ID='${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}' -e GEOIPUPDATE_LICENSE_KEY='${{ secrets.GEOIPUPDATE_LICENSE_KEY }}' -e GEOIPUPDATE_EDITION_IDS='GeoLite2-City GeoLite2-Country' maxmindinc/geoipupdate
+        docker run --rm --name nginx gokaygurcan/nginx nginx -V
 
     - id: 'push'
       name: 'Push to Docker Registry'
