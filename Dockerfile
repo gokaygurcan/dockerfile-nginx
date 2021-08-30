@@ -10,7 +10,7 @@ ENV DEBIAN_FRONTEND="noninteractive" \
     USR_SRC_NGINX=/usr/src/nginx \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
     NGINX_VERSION=1.21.1 \
-    OPENSSL_VERSION=1.1.1k \
+    OPENSSL_VERSION=1.1.1l \
     PAGESPEED_VERSION=1.13.35.2 \
     LIBMAXMINDDB_VERSION=1.6.0
 
