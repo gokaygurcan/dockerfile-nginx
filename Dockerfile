@@ -1,6 +1,6 @@
 # gokaygurcan/dockerfile-nginx
 
-FROM gokaygurcan/ubuntu:latest
+FROM gokaygurcan/ubuntu:focal
 
 # metadata
 LABEL maintainer "Gökay Gürcan <docker@gokaygurcan.com>"
