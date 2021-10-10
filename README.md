@@ -12,7 +12,7 @@
 
 | Variable             | Version                |
 | -------------------- | ---------------------- |
-| NGINX_VERSION        | 1.21.1                 |
+| NGINX_VERSION        | 1.21.3                 |
 | OPENSSL_VERSION      | 1.1.1l                 |
 | PAGESPEED_VERSION    | 1.13.35.2              |
 | LIBMAXMINDDB_VERSION | 1.6.0                  |
@@ -69,7 +69,9 @@ git clone https://github.com/gokaygurcan/dockerfile-nginx.git
 cd dockerfile-nginx
 
 # run nginx with the default configurations
-docker run --rm -d --name nginx -p 80:80 -p 443:443 -v `pwd`/docker/etc/nginx:/etc/nginx gokaygurcan/nginx
+docker run --rm -d --name nginx -p 80:80 -p 443:443 \
+  -v `pwd`/docker/etc/nginx:/etc/nginx \
+  gokaygurcan/nginx
 
 # see if cURL returns anything good
 curl -i http://localhost
