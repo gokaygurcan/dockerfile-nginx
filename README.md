@@ -12,7 +12,7 @@
 
 | Variable             | Version                |
 | -------------------- | ---------------------- |
-| NGINX_VERSION        | 1.21.5                 |
+| NGINX_VERSION        | 1.21.6                 |
 | OPENSSL_VERSION      | 1.1.1n                 |
 | PAGESPEED_VERSION    | 1.13.35.2              |
 | LIBMAXMINDDB_VERSION | 1.6.0                  |
