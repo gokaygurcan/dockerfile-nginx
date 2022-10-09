@@ -1,7 +1,5 @@
 # NGINX
 
-![Deploy to Docker Hub](https://github.com/gokaygurcan/dockerfile-nginx/workflows/Deploy%20to%20Docker%20Hub/badge.svg?branch=master)
-
 <h2>Environment variables</h2>
 
 | Variable             | Path                   |
@@ -12,7 +10,7 @@
 
 | Variable             | Version                |
 | -------------------- | ---------------------- |
-| NGINX_VERSION        | 1.22.0                 |
+| NGINX_VERSION        | 1.23.1                 |
 | OPENSSL_VERSION      | 1.1.1p                 |
 | PAGESPEED_VERSION    | 1.13.35.2              |
 | LIBMAXMINDDB_VERSION | 1.6.0                  |
