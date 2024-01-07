@@ -160,7 +160,7 @@ RUN cd ${USR_SRC_NGINX} && \
     --without-http_uwsgi_module \
     --without-http_scgi_module \
     --add-module=${USR_SRC_NGINX_MODS}/njs/nginx \
-    --add-module=${USR_SRC_NGINX_MODS}/pagespeed \
+    # --add-module=${USR_SRC_NGINX_MODS}/pagespeed \
     --add-module=${USR_SRC_NGINX_MODS}/geoip2 \
     --add-module=${USR_SRC_NGINX_MODS}/headers-more \
     --add-module=${USR_SRC_NGINX_MODS}/cache-purge \
