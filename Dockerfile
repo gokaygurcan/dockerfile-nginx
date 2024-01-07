@@ -11,7 +11,7 @@ ENV DEBIAN_FRONTEND="noninteractive" \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
     NGINX_VERSION=1.25.3 \
     OPENSSL_VERSION=1.1.1w \
-    PAGESPEED_VERSION=1.13.35.2 \
+    # PAGESPEED_VERSION=1.13.35.2 \
     LIBMAXMINDDB_VERSION=1.8.0
 
 USER root
@@ -108,19 +108,19 @@ RUN set -ex && \
     aria2c -q https://github.com/aperezdc/ngx-fancyindex/tarball/master && \
     tar -xzf aperezdc-ngx-fancyindex-*.tar.gz && \
     rm aperezdc-ngx-fancyindex-*.tar.gz && \
-    mv aperezdc-ngx-fancyindex-* fancyindex && \
-    # apache/incubator-pagespeed-ngx and psol
-    wget -q https://github.com/apache/incubator-pagespeed-ngx/archive/v${PAGESPEED_VERSION}-stable.tar.gz && \
-    tar -xzf v${PAGESPEED_VERSION}-stable.tar.gz && \
-    rm v${PAGESPEED_VERSION}-stable.tar.gz && \
-    mv *-pagespeed-* pagespeed && \
-    cd ${USR_SRC_NGINX_MODS}/pagespeed && \
-    wget -q https://dl.google.com/dl/page-speed/psol/${PAGESPEED_VERSION}-x64.tar.gz && \
-    tar -xzf ${PAGESPEED_VERSION}-x64.tar.gz && \
-    rm ${PAGESPEED_VERSION}-x64.tar.gz && \
-    mkdir -p /var/cache/ngx_pagespeed 
-
+    mv aperezdc-ngx-fancyindex-* fancyindex 
     # && \
+    # apache/incubator-pagespeed-ngx and psol
+    # wget -q https://github.com/apache/incubator-pagespeed-ngx/archive/v${PAGESPEED_VERSION}-stable.tar.gz && \
+    # tar -xzf v${PAGESPEED_VERSION}-stable.tar.gz && \
+    # rm v${PAGESPEED_VERSION}-stable.tar.gz && \
+    # mv *-pagespeed-* pagespeed && \
+    # cd ${USR_SRC_NGINX_MODS}/pagespeed && \
+    # wget -q https://dl.google.com/dl/page-speed/psol/${PAGESPEED_VERSION}-x64.tar.gz && \
+    # tar -xzf ${PAGESPEED_VERSION}-x64.tar.gz && \
+    # rm ${PAGESPEED_VERSION}-x64.tar.gz && \
+    # mkdir -p /var/cache/ngx_pagespeed 
+
     # compile nginx
 RUN cd ${USR_SRC_NGINX} && \
     sh ./configure \
