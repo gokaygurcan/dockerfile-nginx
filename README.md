@@ -1,8 +1,6 @@
 # NGINX
 
-![Deploy to Docker Hub](https://github.com/gokaygurcan/dockerfile-nginx/workflows/Deploy%20to%20Docker%20Hub/badge.svg?branch=master)
-
-<h2>Environment variables</h2>
+## Environment variables
 
 | Variable             | Path                   |
 | -------------------- | ---------------------- |
@@ -17,18 +15,21 @@
 | PAGESPEED_VERSION    | 1.13.35.2              |
 | LIBMAXMINDDB_VERSION | 1.6.0                  |
 
-<h2>Additional packages</h2>
+## Additional packages
 
 - libbrotli-dev
+- libmaxminddb-dev
 - libpcre3
 - libpcre3-dev
+- libxml2
+- libxml2-dev
+- libxslt1-dev
 - mmdb-bin
 - uuid-dev
-- zlibc
 - zlib1g
 - zlib1g-dev
 
-<h2>Volumes</h2>
+## Volumes
 
 | Path             | Description                                                                            |
 | ---------------- | -------------------------------------------------------------------------------------- |
@@ -38,20 +39,20 @@
 | /etc/letsencrypt | Let's Encrypt files (see [certbot](https://github.com/gokaygurcan/dockerfile-certbot)) |
 | /usr/share/GeoIP | GeoIP database folder (see below)                                                      |
 
-<h2>Ports</h2>
+## Ports
 
 | Port | Process | TCP/UDP |
 | ---- | ------- | ------- |
 | 80   | NGINX   | TCP     |
 | 443  | NGINX   | TCP     |
 
-<h2>CMD</h2>
+## CMD
 
 ```bash
 sudo nginx -g daemon off;
 ```
 
-<h2>Usage</h2>
+## Usage
 
 To pull the image
 
@@ -77,7 +78,7 @@ docker run --rm -d --name nginx -p 80:80 -p 443:443 \
 curl -i http://localhost
 ```
 
-<h2>GeoIP</h2>
+## GeoIP
 
 To use GeoIP, you need to download City and/or Country databases from MaxMind. The best way to do it is to use their Docker container.
 

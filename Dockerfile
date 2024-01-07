@@ -9,10 +9,10 @@ ENV DEBIAN_FRONTEND="noninteractive" \
     USR_SRC=/usr/src \
     USR_SRC_NGINX=/usr/src/nginx \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
-    NGINX_VERSION=1.22.0 \
-    OPENSSL_VERSION=1.1.1p \
+    NGINX_VERSION=1.25.3 \
+    OPENSSL_VERSION=1.1.1w \
     PAGESPEED_VERSION=1.13.35.2 \
-    LIBMAXMINDDB_VERSION=1.6.0
+    LIBMAXMINDDB_VERSION=1.8.0
 
 USER root
 
@@ -30,9 +30,11 @@ RUN set -ex && \
     libmaxminddb-dev \
     libpcre3 \
     libpcre3-dev \
+    libxml2 \
+    libxml2-dev \
+    libxslt1-dev \
     mmdb-bin \
     uuid-dev \
-    zlibc \
     zlib1g \
     zlib1g-dev && \
     # maxmind geoip2
@@ -116,9 +118,11 @@ RUN set -ex && \
     wget -q https://dl.google.com/dl/page-speed/psol/${PAGESPEED_VERSION}-x64.tar.gz && \
     tar -xzf ${PAGESPEED_VERSION}-x64.tar.gz && \
     rm ${PAGESPEED_VERSION}-x64.tar.gz && \
-    mkdir -p /var/cache/ngx_pagespeed && \
+    mkdir -p /var/cache/ngx_pagespeed 
+
+    # && \
     # compile nginx
-    cd ${USR_SRC_NGINX} && \
+RUN cd ${USR_SRC_NGINX} && \
     sh ./configure \
     --conf-path=/etc/nginx/nginx.conf \
     --sbin-path=/usr/sbin/nginx \
@@ -143,7 +147,6 @@ RUN set -ex && \
     --with-http_stub_status_module \
     --with-http_sub_module \
     --with-http_v2_module \
-    --with-ipv6 \
     --with-openssl=${USR_SRC_NGINX_MODS}/openssl \
     --with-compat \
     --with-mail \
@@ -165,6 +168,7 @@ RUN set -ex && \
     --add-module=${USR_SRC_NGINX_MODS}/sysguard \
     --add-module=${USR_SRC_NGINX_MODS}/brotli \
     --add-module=${USR_SRC_NGINX_MODS}/fancyindex && \
+    # make and install
     make && \
     make install && \
     echo "✓" | tee /usr/local/nginx/html/index.html && \
@@ -175,10 +179,9 @@ RUN set -ex && \
     rm -rf ${USR_SRC_NGINX} && \
     rm -rf /var/lib/{apt,dpkg,cache,log}/ && \
     rm -rf /var/tmp/* && \
-    rm -rf /tmp/*
-    
-# forward request and error logs to docker log collector
-RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
+    rm -rf /tmp/* && \
+    # forward request and error logs to docker log collector
+    ln -sf /dev/stdout /var/log/nginx/access.log && \
     ln -sf /dev/stderr /var/log/nginx/error.log
 
 WORKDIR /etc/nginx

@@ -1,50 +1,74 @@
 # gokaygurcan/dockerfile-nginx
 
-name: 'NGINX'
+name: nginx
 
 on:
   push:
   pull_request:
     branches:
-    - master
+    - main
 
 env:
   GITHUB: ${{ toJson(github) }}
 
 jobs:
+  version:
+    name: Version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+    - id: version
+      name: Version
+      run: |
+        grep -r "NGINX_VERSION=" Dockerfile | cut -d "=" -f 2 | cut -d " " -f 1
+        echo "::set-output name=version::$(grep -r "NGINX_VERSION=" Dockerfile | cut -d "=" -f 2 | cut -d " " -f 1)"
+
   nginx:
-    name: 'nginx'
-    runs-on: 'ubuntu-latest'
+    name: nginx
+    runs-on: ubuntu-latest
     env:
       CI: true
     steps:
-    - id: 'checkout'
-      name: 'Checkout'
-      uses: 'actions/checkout@v2'
-
-    - id: 'login'
-      name: 'Login to Docker Hub'
-      uses: 'actions-hub/docker/login@master'
-      if: github.ref == 'refs/heads/master'
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-
-    - id: 'build'
-      name: 'Build image'
+    - id: sanity-check
+      name: Sanity check
       run: |
-        docker build --file Dockerfile --tag gokaygurcan/nginx:latest .
+        printenv
 
-    - id: 'test'
-      name: 'Test'
+    - id: checkout
+      name: Checkout
+      uses: actions/checkout@v3
+
+    - id: login
+      name: Login to Docker Hub
+      uses: docker/login-action@v2
+      if: |
+        github.ref == 'refs/heads/main'
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - id: build
+      name: Build image
+      run: |
+        docker build --file Dockerfile --tag gokaygurcan/nginx:latest --tag gokaygurcan/nginx:${{ steps.version.outputs.version }} .
+        docker ps -a
+
+    - id: test
+      name: Test
       run: |
         docker volume create usr-share-geoip
         docker run --rm --name geoipupdate -v usr-share-geoip:/usr/share/GeoIP -e GEOIPUPDATE_FREQUENCY=0 -e GEOIPUPDATE_ACCOUNT_ID='${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}' -e GEOIPUPDATE_LICENSE_KEY='${{ secrets.GEOIPUPDATE_LICENSE_KEY }}' -e GEOIPUPDATE_EDITION_IDS='GeoLite2-City GeoLite2-Country' maxmindinc/geoipupdate
         docker run --rm --name nginx gokaygurcan/nginx nginx -V
 
-    - id: 'push'
-      name: 'Push to Docker Registry'
-      uses: 'actions-hub/docker@master'
-      if: github.ref == 'refs/heads/master'
+    - id: push
+      name: Push to Docker Registry
+      uses: docker/build-push-action@v3
+      if: |
+        github.ref == 'refs/heads/main'
       with:
-        args: push gokaygurcan/nginx:latest
+        context: .
+        push: true
+        tags: |
+          gokaygurcan/nginx:latest
+          gokaygurcan/nginx:${{ steps.version.outputs.version }}
