@@ -23,6 +23,7 @@ jobs:
       run: |
         grep -r "NGINX_VERSION=" Dockerfile | cut -d "=" -f 2 | cut -d " " -f 1
         # echo "::set-output name=version::$(grep -r "NGINX_VERSION=" Dockerfile | cut -d "=" -f 2 | cut -d " " -f 1)"
+        echo "version=main" >> $GITHUB_OUTPUT
         echo "version=$(grep -r "NGINX_VERSION=" Dockerfile | cut -d "=" -f 2 | cut -d " " -f 1)" >> $GITHUB_OUTPUT
 
   nginx:
