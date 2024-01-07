@@ -15,7 +15,7 @@
 
 ---
 
-<h2>conf.d/</h2>
+## conf.d/
 
 - gzip.conf
 - open_file.conf
@@ -24,16 +24,15 @@
 - ssl.conf
 - stub_status.conf
 
-<h2>conf.optional.d/</h2>
+## conf.optional.d/
 
 - brotli.conf
 - fancyindex.conf
 - mail.conf
 - more_headers.conf
-- pagespeed.conf
 - sysguard.conf
 
-<h2>sites-enabled/</h2>
+## sites-enabled/
 
 - localhost/
   - default.conf

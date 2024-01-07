@@ -12,7 +12,6 @@
 | -------------------- | ---------------------- |
 | NGINX_VERSION        | 1.22.0                 |
 | OPENSSL_VERSION      | 1.1.1p                 |
-| #PAGESPEED_VERSION   | 1.13.35.2              |
 | LIBMAXMINDDB_VERSION | 1.6.0                  |
 
 ## Additional packages
