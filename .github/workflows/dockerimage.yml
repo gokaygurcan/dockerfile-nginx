@@ -13,7 +13,7 @@ env:
 
 jobs:
   version:
-    name: Version
+    name: version
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.version.outputs.version }}
@@ -22,7 +22,7 @@ jobs:
       name: Version
       run: |
         grep -r "NGINX_VERSION=" Dockerfile | cut -d "=" -f 2 | cut -d " " -f 1
-        echo "::set-output name=version::$(grep -r "NGINX_VERSION=" Dockerfile | cut -d "=" -f 2 | cut -d " " -f 1)"
+        echo "{version}={$(grep -r "NGINX_VERSION=" Dockerfile | cut -d "=" -f 2 | cut -d " " -f 1)}" >> $GITHUB_OUTPUT
 
   nginx:
     name: nginx
