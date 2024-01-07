@@ -12,24 +12,9 @@ env:
   GITHUB: ${{ toJson(github) }}
 
 jobs:
-  version:
-    name: version
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.version.outputs.version }}
-    steps:
-    - id: version
-      name: Version
-      run: |
-        grep -r "NGINX_VERSION=" Dockerfile | cut -d "=" -f 2 | cut -d " " -f 1
-        # echo "::set-output name=version::$(grep -r "NGINX_VERSION=" Dockerfile | cut -d "=" -f 2 | cut -d " " -f 1)"
-        echo "version=main" >> $GITHUB_OUTPUT
-        echo "version=$(grep -r "NGINX_VERSION=" Dockerfile | cut -d "=" -f 2 | cut -d " " -f 1)" >> $GITHUB_OUTPUT
-
   nginx:
     name: nginx
     runs-on: ubuntu-latest
-    needs: [ version ]
     env:
       CI: true
     steps:
@@ -55,7 +40,6 @@ jobs:
       name: Build image
       run: |
         docker build --file Dockerfile --tag gokaygurcan/nginx:latest .
-        # docker build --file Dockerfile --tag gokaygurcan/nginx:latest --tag gokaygurcan/nginx:${{ needs.version.outputs.version }} .
         docker ps -a
 
     - id: test
@@ -73,6 +57,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: |
-          gokaygurcan/nginx:latest
-          # gokaygurcan/nginx:${{ needs.version.outputs.version }}
+        tags: gokaygurcan/nginx:latest
