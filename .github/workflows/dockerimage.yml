@@ -55,6 +55,7 @@ jobs:
       name: Build image
       run: |
         docker build --file Dockerfile --tag gokaygurcan/nginx:latest --tag gokaygurcan/nginx:${{ needs.version.outputs.version }} .
+        # docker build --file Dockerfile --tag gokaygurcan/nginx:latest .
         docker ps -a
 
     - id: test
@@ -74,4 +75,4 @@ jobs:
         push: true
         tags: |
           gokaygurcan/nginx:latest
-          gokaygurcan/nginx:${{ needs.version.outputs.version }}
+          # gokaygurcan/nginx:${{ needs.version.outputs.version }}
