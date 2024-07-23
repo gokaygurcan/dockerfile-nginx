@@ -5,14 +5,13 @@ FROM gokaygurcan/ubuntu:latest
 # metadata
 LABEL maintainer "Gökay Gürcan <docker@gokaygurcan.com>"
 
-ENV DEBIAN_FRONTEND="noninteractive" \
-    USR_SRC=/usr/src \
+ARG DEBIAN_FRONTEND=noninteractive
+ENV USR_SRC=/usr/src \
     USR_SRC_NGINX=/usr/src/nginx \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
-    NGINX_VERSION=1.25.3 \
-    OPENSSL_VERSION=1.1.1w \
-    # PAGESPEED_VERSION=1.13.35.2 \
-    LIBMAXMINDDB_VERSION=1.8.0
+    NGINX_VERSION=1.27.0 \
+    OPENSSL_VERSION=3.3.1 \
+    LIBMAXMINDDB_VERSION=1.10.0
 
 USER root
 
@@ -109,17 +108,6 @@ RUN set -ex && \
     tar -xzf aperezdc-ngx-fancyindex-*.tar.gz && \
     rm aperezdc-ngx-fancyindex-*.tar.gz && \
     mv aperezdc-ngx-fancyindex-* fancyindex 
-    # && \
-    # apache/incubator-pagespeed-ngx and psol
-    # wget -q https://github.com/apache/incubator-pagespeed-ngx/archive/v${PAGESPEED_VERSION}-stable.tar.gz && \
-    # tar -xzf v${PAGESPEED_VERSION}-stable.tar.gz && \
-    # rm v${PAGESPEED_VERSION}-stable.tar.gz && \
-    # mv *-pagespeed-* pagespeed && \
-    # cd ${USR_SRC_NGINX_MODS}/pagespeed && \
-    # wget -q https://dl.google.com/dl/page-speed/psol/${PAGESPEED_VERSION}-x64.tar.gz && \
-    # tar -xzf ${PAGESPEED_VERSION}-x64.tar.gz && \
-    # rm ${PAGESPEED_VERSION}-x64.tar.gz && \
-    # mkdir -p /var/cache/ngx_pagespeed 
 
     # compile nginx
 RUN cd ${USR_SRC_NGINX} && \
@@ -160,7 +148,6 @@ RUN cd ${USR_SRC_NGINX} && \
     --without-http_uwsgi_module \
     --without-http_scgi_module \
     --add-module=${USR_SRC_NGINX_MODS}/njs/nginx \
-    # --add-module=${USR_SRC_NGINX_MODS}/pagespeed \
     --add-module=${USR_SRC_NGINX_MODS}/geoip2 \
     --add-module=${USR_SRC_NGINX_MODS}/headers-more \
     --add-module=${USR_SRC_NGINX_MODS}/cache-purge \
@@ -201,6 +188,6 @@ STOPSIGNAL SIGTERM
 
 USER ubuntu
 
-HEALTHCHECK CMD curl -f http://localhost/ || exit 1
+HEALTHCHECK --interval=60s --start-period=60s CMD curl -f http://localhost/ || exit 1
 
 CMD [ "sudo", "nginx", "-g", "daemon off;" ]
