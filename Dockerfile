@@ -159,6 +159,8 @@ RUN set -ex && \
     echo "✓" | tee /usr/local/nginx/html/index.html && \
     # Diffie-Hellman
     openssl dhparam -dsaparam -out /etc/nginx/dhparam.pem 4096 && \
+    # configure dynamic linker run-time bindings
+    ldconfig -v && \
     # clean up
     rm /etc/nginx/*.default && \
     apt-get autoclean -yqq && \

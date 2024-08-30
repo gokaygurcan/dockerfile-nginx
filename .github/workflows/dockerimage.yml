@@ -36,8 +36,6 @@ jobs:
     - id: test
       name: Test
       run: |
-        docker volume create usr-share-geoip
-        docker run --rm --name geoipupdate -v usr-share-geoip:/usr/share/GeoIP -e GEOIPUPDATE_FREQUENCY=0 -e GEOIPUPDATE_ACCOUNT_ID='${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}' -e GEOIPUPDATE_LICENSE_KEY='${{ secrets.GEOIPUPDATE_LICENSE_KEY }}' -e GEOIPUPDATE_EDITION_IDS='GeoLite2-City GeoLite2-Country' maxmindinc/geoipupdate
         docker run --rm --name nginx gokaygurcan/nginx nginx -V
     
     - id: login
