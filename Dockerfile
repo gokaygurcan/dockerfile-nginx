@@ -159,6 +159,8 @@ RUN set -ex && \
     echo "✓" | tee /usr/local/nginx/html/index.html && \
     # Diffie-Hellman
     openssl dhparam -dsaparam -out /etc/nginx/dhparam.pem 4096 && \
+    # configure dynamic linker run-time bindings
+    ldconfig -v && \
     # clean up
     rm /etc/nginx/*.default && \
     apt-get autoclean -yqq && \
@@ -176,6 +178,8 @@ FROM gokaygurcan/ubuntu:latest
 LABEL maintainer "Gökay Gürcan <docker@gokaygurcan.com>"
 
 COPY --from=build-nginx /etc/nginx /etc/nginx
+COPY --from=build-nginx /usr/lib /usr/lib
+COPY --from=build-nginx /usr/local/lib /usr/local/lib
 COPY --from=build-nginx /usr/local/nginx /usr/local/nginx
 COPY --from=build-nginx /var/log/nginx /var/log/nginx
 COPY --from=build-nginx /usr/sbin/nginx /usr/sbin/nginx
