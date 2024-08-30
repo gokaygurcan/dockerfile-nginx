@@ -178,6 +178,8 @@ FROM gokaygurcan/ubuntu:latest
 LABEL maintainer "Gökay Gürcan <docker@gokaygurcan.com>"
 
 COPY --from=build-nginx /etc/nginx /etc/nginx
+COPY --from=build-nginx /usr/lib /usr/lib
+COPY --from=build-nginx /usr/local/lib /usr/local/lib
 COPY --from=build-nginx /usr/local/nginx /usr/local/nginx
 COPY --from=build-nginx /var/log/nginx /var/log/nginx
 COPY --from=build-nginx /usr/sbin/nginx /usr/sbin/nginx
