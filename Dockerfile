@@ -1,17 +1,15 @@
 # gokaygurcan/dockerfile-nginx
 
-FROM gokaygurcan/ubuntu:latest
-
-# metadata
+FROM gokaygurcan/ubuntu:latest as build-nginx
 LABEL maintainer "Gökay Gürcan <docker@gokaygurcan.com>"
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV USR_SRC=/usr/src \
     USR_SRC_NGINX=/usr/src/nginx \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
-    NGINX_VERSION=1.27.0 \
+    NGINX_VERSION=1.27.1 \
     OPENSSL_VERSION=3.3.1 \
-    LIBMAXMINDDB_VERSION=1.10.0
+    LIBMAXMINDDB_VERSION=1.11.0
 
 USER root
 
@@ -98,6 +96,7 @@ RUN set -ex && \
     mv eustas-ngx_brotli-* brotli && \
     cd ${USR_SRC_NGINX_MODS}/brotli/deps && \
     rm -rf ./brotli && \
+    # google/brotli
     aria2c -q https://github.com/google/brotli/tarball/master && \
     tar -xzf google-brotli-*.tar.gz && \
     rm google-brotli-*.tar.gz && \
@@ -107,10 +106,9 @@ RUN set -ex && \
     aria2c -q https://github.com/aperezdc/ngx-fancyindex/tarball/master && \
     tar -xzf aperezdc-ngx-fancyindex-*.tar.gz && \
     rm aperezdc-ngx-fancyindex-*.tar.gz && \
-    mv aperezdc-ngx-fancyindex-* fancyindex 
-
+    mv aperezdc-ngx-fancyindex-* fancyindex && \
     # compile nginx
-RUN cd ${USR_SRC_NGINX} && \
+    cd ${USR_SRC_NGINX} && \
     sh ./configure \
     --conf-path=/etc/nginx/nginx.conf \
     --sbin-path=/usr/sbin/nginx \
@@ -159,6 +157,8 @@ RUN cd ${USR_SRC_NGINX} && \
     make && \
     make install && \
     echo "✓" | tee /usr/local/nginx/html/index.html && \
+    # Diffie-Hellman
+    openssl dhparam -dsaparam -out /etc/nginx/dhparam.pem 4096 && \
     # clean up
     rm /etc/nginx/*.default && \
     apt-get autoclean -yqq && \
@@ -171,13 +171,21 @@ RUN cd ${USR_SRC_NGINX} && \
     ln -sf /dev/stdout /var/log/nginx/access.log && \
     ln -sf /dev/stderr /var/log/nginx/error.log
 
+# FROM ubuntu:noble
+FROM gokaygurcan/ubuntu:latest
+LABEL maintainer "Gökay Gürcan <docker@gokaygurcan.com>"
+
+COPY --from=build-nginx /etc/nginx /etc/nginx
+COPY --from=build-nginx /usr/local/nginx /usr/local/nginx
+COPY --from=build-nginx /var/log/nginx /var/log/nginx
+COPY --from=build-nginx /usr/sbin/nginx /usr/sbin/nginx
+
 WORKDIR /etc/nginx
 
 # copy configs from docker folder
 COPY docker /
 
-# Diffie-Hellman
-RUN openssl dhparam -dsaparam -out /etc/nginx/dhparam.pem 4096
+ENV PATH "${PATH}:/usr/sbin/nginx"
 
 EXPOSE 80/tcp 443/tcp
 
