@@ -1,15 +1,15 @@
 # gokaygurcan/dockerfile-nginx
 
-FROM gokaygurcan/ubuntu:latest as build-nginx
-LABEL maintainer "Gökay Gürcan <docker@gokaygurcan.com>"
+FROM gokaygurcan/ubuntu:latest AS build-nginx
+LABEL maintainer="Gökay Gürcan <docker@gokaygurcan.com>"
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV USR_SRC=/usr/src \
     USR_SRC_NGINX=/usr/src/nginx \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
-    NGINX_VERSION=1.27.1 \
-    OPENSSL_VERSION=3.3.1 \
-    LIBMAXMINDDB_VERSION=1.11.0
+    NGINX_VERSION=1.29.0 \
+    OPENSSL_VERSION=3.5.0 \
+    LIBMAXMINDDB_VERSION=1.12.2
 
 USER root
 
@@ -175,7 +175,7 @@ RUN set -ex && \
 
 # FROM ubuntu:noble
 FROM gokaygurcan/ubuntu:latest
-LABEL maintainer "Gökay Gürcan <docker@gokaygurcan.com>"
+LABEL maintainer="Gökay Gürcan <docker@gokaygurcan.com>"
 
 COPY --from=build-nginx /etc/nginx /etc/nginx
 COPY --from=build-nginx /usr/lib /usr/lib
@@ -189,7 +189,7 @@ WORKDIR /etc/nginx
 # copy configs from docker folder
 COPY docker /
 
-ENV PATH "${PATH}:/usr/sbin/nginx"
+ENV PATH="${PATH}:/usr/sbin/nginx"
 
 EXPOSE 80/tcp 443/tcp
 
