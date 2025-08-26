@@ -1,14 +1,14 @@
 # gokaygurcan/dockerfile-nginx
 
-FROM gokaygurcan/ubuntu:latest AS build-nginx
+FROM rust:latest AS nginx-build
 LABEL maintainer="Gökay Gürcan <docker@gokaygurcan.com>"
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV USR_SRC=/usr/src \
     USR_SRC_NGINX=/usr/src/nginx \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
-    NGINX_VERSION=1.29.0 \
-    OPENSSL_VERSION=3.5.0 \
+    NGINX_VERSION=1.29.1 \
+    OPENSSL_VERSION=3.5.2 \
     LIBMAXMINDDB_VERSION=1.12.2
 
 USER root
@@ -25,18 +25,20 @@ RUN set -ex && \
     apt-get install -yqq --no-install-recommends --no-install-suggests \
     libbrotli-dev \
     libmaxminddb-dev \
-    libpcre3 \
-    libpcre3-dev \
+    libclang-dev \
+    libssl-dev \
     libxml2 \
     libxml2-dev \
     libxslt1-dev \
     mmdb-bin \
+    pkg-config \
     uuid-dev \
     zlib1g \
     zlib1g-dev && \
-    # maxmind geoip2
+    # start configuring the modules
     cd /tmp && \
-    wget -q https://github.com/maxmind/libmaxminddb/releases/download/${LIBMAXMINDDB_VERSION}/libmaxminddb-${LIBMAXMINDDB_VERSION}.tar.gz && \
+    # maxmind geoip2
+    curl -fSL https://github.com/maxmind/libmaxminddb/releases/download/${LIBMAXMINDDB_VERSION}/libmaxminddb-${LIBMAXMINDDB_VERSION}.tar.gz -o libmaxminddb-${LIBMAXMINDDB_VERSION}.tar.gz && \
     tar -xzf libmaxminddb-*.tar.gz && \
     rm libmaxminddb-*.tar.gz && \
     cd libmaxminddb-* && \
@@ -47,7 +49,7 @@ RUN set -ex && \
     ldconfig && \
     # download nginx
     cd ${USR_SRC} && \
-    wget -q https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
+    curl -fSL https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz -o nginx-${NGINX_VERSION}.tar.gz && \
     tar -xzf nginx-${NGINX_VERSION}.tar.gz && \
     rm nginx-${NGINX_VERSION}.tar.gz && \
     mv nginx-* nginx && \
@@ -55,58 +57,32 @@ RUN set -ex && \
     mkdir -p ${USR_SRC_NGINX_MODS} && \
     cd ${USR_SRC_NGINX_MODS} && \
     # openssl
-    wget -q https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz && \
+    curl -fSL https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz -o openssl-${OPENSSL_VERSION}.tar.gz && \
     tar -xzf openssl-${OPENSSL_VERSION}.tar.gz && \
     rm openssl-${OPENSSL_VERSION}.tar.gz && \
     mv openssl-* openssl && \
+    # nginx/nginx-acme
+    git clone https://github.com/nginx/nginx-acme.git acme && \
     # nginx/njs
-    aria2c -q https://github.com/nginx/njs/tarball/master && \
-    tar -xzf nginx-njs-*.tar.gz && \
-    rm nginx-njs-*.tar.gz && \
-    mv nginx-njs-* njs && \
+    git clone https://github.com/nginx/njs.git njs && \
     # leev/ngx_http_geoip2_module
-    aria2c -q https://github.com/leev/ngx_http_geoip2_module/tarball/master && \
-    tar -xzf leev-ngx_http_geoip2_module-*.tar.gz && \
-    rm leev-ngx_http_geoip2_module-*.tar.gz && \
-    mv leev-ngx_http_geoip2_module-* geoip2 && \
+    git clone https://github.com/leev/ngx_http_geoip2_module.git geoip2 && \
     # openresty/headers-more-nginx-module
-    aria2c -q https://github.com/openresty/headers-more-nginx-module/tarball/master && \
-    tar -xzf openresty-headers-more-nginx-module-*.tar.gz && \
-    rm openresty-headers-more-nginx-module-*.tar.gz && \
-    mv openresty-headers-more-nginx-module-* headers-more && \
+    git clone https://github.com/openresty/headers-more-nginx-module.git headers-more && \
     # frickle/ngx_cache_purge
-    aria2c -q https://github.com/FRiCKLE/ngx_cache_purge/tarball/master && \
-    tar -xzf FRiCKLE-ngx_cache_purge-*.tar.gz && \
-    rm FRiCKLE-ngx_cache_purge-*.tar.gz && \
-    mv FRiCKLE-ngx_cache_purge-* cache-purge && \
+    git clone https://github.com/FRiCKLE/ngx_cache_purge.git cache-purge && \
     # kyprizel/testcookie-nginx-module
-    aria2c -q https://github.com/kyprizel/testcookie-nginx-module/tarball/master && \
-    tar -xzf kyprizel-testcookie-nginx-module-*.tar.gz && \
-    rm kyprizel-testcookie-nginx-module-*.tar.gz && \
-    mv kyprizel-testcookie-nginx-module-* testcookie && \
+    git clone https://github.com/kyprizel/testcookie-nginx-module.git testcookie && \
     # vozlt/nginx-module-sysguard
-    aria2c -q https://github.com/vozlt/nginx-module-sysguard/tarball/master && \
-    tar -xzf vozlt-nginx-module-sysguard-*.tar.gz && \
-    rm vozlt-nginx-module-sysguard-*.tar.gz && \
-    mv vozlt-nginx-module-sysguard-* sysguard && \
+    git clone https://github.com/vozlt/nginx-module-sysguard.git sysguard && \
+    # aperezdc/ngx-fancyindex
+    git clone https://github.com/aperezdc/ngx-fancyindex.git fancyindex && \
     # eustas/ngx_brotli
-    aria2c -q https://github.com/eustas/ngx_brotli/tarball/master && \
-    tar -xzf eustas-ngx_brotli-*.tar.gz && \
-    rm eustas-ngx_brotli-*.tar.gz && \
-    mv eustas-ngx_brotli-* brotli && \
+    git clone https://github.com/eustas/ngx_brotli.git brotli && \
     cd ${USR_SRC_NGINX_MODS}/brotli/deps && \
     rm -rf ./brotli && \
     # google/brotli
-    aria2c -q https://github.com/google/brotli/tarball/master && \
-    tar -xzf google-brotli-*.tar.gz && \
-    rm google-brotli-*.tar.gz && \
-    mv google-brotli-* brotli && \
-    cd ${USR_SRC_NGINX_MODS} && \
-    # aperezdc/ngx-fancyindex
-    aria2c -q https://github.com/aperezdc/ngx-fancyindex/tarball/master && \
-    tar -xzf aperezdc-ngx-fancyindex-*.tar.gz && \
-    rm aperezdc-ngx-fancyindex-*.tar.gz && \
-    mv aperezdc-ngx-fancyindex-* fancyindex && \
+    git clone https://github.com/google/brotli.git brotli && \
     # compile nginx
     cd ${USR_SRC_NGINX} && \
     sh ./configure \
@@ -145,17 +121,22 @@ RUN set -ex && \
     --without-http_fastcgi_module \
     --without-http_uwsgi_module \
     --without-http_scgi_module \
+    --add-dynamic-module=${USR_SRC_NGINX_MODS}/acme \
     --add-module=${USR_SRC_NGINX_MODS}/njs/nginx \
     --add-module=${USR_SRC_NGINX_MODS}/geoip2 \
     --add-module=${USR_SRC_NGINX_MODS}/headers-more \
     --add-module=${USR_SRC_NGINX_MODS}/cache-purge \
     --add-module=${USR_SRC_NGINX_MODS}/testcookie \
     --add-module=${USR_SRC_NGINX_MODS}/sysguard \
-    --add-module=${USR_SRC_NGINX_MODS}/brotli \
-    --add-module=${USR_SRC_NGINX_MODS}/fancyindex && \
+    --add-module=${USR_SRC_NGINX_MODS}/fancyindex \
+    --add-module=${USR_SRC_NGINX_MODS}/brotli && \
     # make and install
     make && \
+    make modules && \
     make install && \
+    # housekeeping
+    mkdir /etc/nginx/modules && \
+    cp ${USR_SRC_NGINX}/objs/ngx_http_acme_module.so /etc/nginx/modules/ngx_http_acme_module.so && \
     echo "✓" | tee /usr/local/nginx/html/index.html && \
     # Diffie-Hellman
     openssl dhparam -dsaparam -out /etc/nginx/dhparam.pem 4096 && \
@@ -173,16 +154,15 @@ RUN set -ex && \
     ln -sf /dev/stdout /var/log/nginx/access.log && \
     ln -sf /dev/stderr /var/log/nginx/error.log
 
-# FROM ubuntu:noble
 FROM gokaygurcan/ubuntu:latest
 LABEL maintainer="Gökay Gürcan <docker@gokaygurcan.com>"
 
-COPY --from=build-nginx /etc/nginx /etc/nginx
-COPY --from=build-nginx /usr/lib /usr/lib
-COPY --from=build-nginx /usr/local/lib /usr/local/lib
-COPY --from=build-nginx /usr/local/nginx /usr/local/nginx
-COPY --from=build-nginx /var/log/nginx /var/log/nginx
-COPY --from=build-nginx /usr/sbin/nginx /usr/sbin/nginx
+COPY --from=nginx-build /etc/nginx /etc/nginx
+COPY --from=nginx-build /usr/lib /usr/lib
+COPY --from=nginx-build /usr/local/lib /usr/local/lib
+COPY --from=nginx-build /usr/local/nginx /usr/local/nginx
+COPY --from=nginx-build /var/log/nginx /var/log/nginx
+COPY --from=nginx-build /usr/sbin/nginx /usr/sbin/nginx
 
 WORKDIR /etc/nginx
 
