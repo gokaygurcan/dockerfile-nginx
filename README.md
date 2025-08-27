@@ -10,20 +10,21 @@
 
 | Variable             | Version                |
 | -------------------- | ---------------------- |
-| NGINX_VERSION        | 1.29.0                 |
-| OPENSSL_VERSION      | 3.5.0                  |
+| NGINX_VERSION        | 1.29.1                 |
+| OPENSSL_VERSION      | 3.5.2                  |
 | LIBMAXMINDDB_VERSION | 1.12.2                 |
 
 ## Additional packages
 
 - libbrotli-dev
 - libmaxminddb-dev
-- libpcre3
-- libpcre3-dev
+- libclang-dev
+- libssl-dev
 - libxml2
 - libxml2-dev
 - libxslt1-dev
 - mmdb-bin
+- pkg-config
 - uuid-dev
 - zlib1g
 - zlib1g-dev
@@ -44,12 +45,6 @@
 | ---- | ------- | ------- |
 | 80   | NGINX   | TCP     |
 | 443  | NGINX   | TCP     |
-
-## CMD
-
-```bash
-sudo nginx -g daemon off;
-```
 
 ## Usage
 
