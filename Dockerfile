@@ -7,9 +7,9 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV USR_SRC=/usr/src \
     USR_SRC_NGINX=/usr/src/nginx \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
-    NGINX_VERSION=1.29.1 \
-    OPENSSL_VERSION=3.5.2 \
-    LIBMAXMINDDB_VERSION=1.12.2
+    NGINX_VERSION=1.30.0 \
+    OPENSSL_VERSION=4.0.0 \
+    LIBMAXMINDDB_VERSION=1.13.3
 
 USER root
 
@@ -57,7 +57,7 @@ RUN set -ex && \
     mkdir -p ${USR_SRC_NGINX_MODS} && \
     cd ${USR_SRC_NGINX_MODS} && \
     # openssl
-    curl -fSL https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz -o openssl-${OPENSSL_VERSION}.tar.gz && \
+    curl -fSL https://github.com/openssl/openssl/releases/download/openssl-${OPENSSL_VERSION}/openssl-${OPENSSL_VERSION}.tar.gz -o openssl-${OPENSSL_VERSION}.tar.gz && \
     tar -xzf openssl-${OPENSSL_VERSION}.tar.gz && \
     rm openssl-${OPENSSL_VERSION}.tar.gz && \
     mv openssl-* openssl && \

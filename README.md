@@ -10,9 +10,9 @@
 
 | Variable             | Version                |
 | -------------------- | ---------------------- |
-| NGINX_VERSION        | 1.29.1                 |
-| OPENSSL_VERSION      | 3.5.2                  |
-| LIBMAXMINDDB_VERSION | 1.12.2                 |
+| NGINX_VERSION        | 1.30.0                 |
+| OPENSSL_VERSION      | 4.0.0                  |
+| LIBMAXMINDDB_VERSION | 1.13.3                 |
 
 ## Additional packages
 
