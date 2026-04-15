@@ -77,6 +77,12 @@ RUN set -ex && \
     git clone https://github.com/vozlt/nginx-module-sysguard.git sysguard && \
     # aperezdc/ngx-fancyindex
     git clone https://github.com/aperezdc/ngx-fancyindex.git fancyindex && \
+    # eustas/ngx_brotli
+    git clone https://github.com/eustas/ngx_brotli.git brotli && \
+    cd ${USR_SRC_NGINX_MODS}/brotli/deps && \
+    rm -rf ./brotli && \
+    # google/brotli
+    git clone https://github.com/google/brotli.git brotli && \
     # compile nginx
     cd ${USR_SRC_NGINX} && \
     sh ./configure \
@@ -122,7 +128,8 @@ RUN set -ex && \
     --add-module=${USR_SRC_NGINX_MODS}/cache-purge \
     --add-module=${USR_SRC_NGINX_MODS}/testcookie \
     --add-module=${USR_SRC_NGINX_MODS}/sysguard \
-    --add-module=${USR_SRC_NGINX_MODS}/fancyindex && \
+    --add-module=${USR_SRC_NGINX_MODS}/fancyindex \
+    --add-module=${USR_SRC_NGINX_MODS}/brotli && \
     # make and install
     make && \
     make modules && \
