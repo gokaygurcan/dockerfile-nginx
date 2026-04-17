@@ -13,6 +13,7 @@
 | NGINX_VERSION        | 1.30.0                 |
 | OPENSSL_VERSION      | 4.0.0                  |
 | LIBMAXMINDDB_VERSION | 1.13.3                 |
+| DATADOG_VERSION      | 1.16.0                 |
 
 ## Additional packages
 
@@ -95,3 +96,11 @@ docker run --rm -d --name nginx -p 80:80 -p 443:443 \
   -v usr-share-geoip:/usr/share/GeoIP \
   gokaygurcan/nginx
 ```
+
+## Datadog
+
+| Variable             | Path                   |
+| -------------------- | ---------------------- |
+| DD_SERVICE           | "nginx"                |
+| DD_ENV               | "production"           |
+| DD_VERSION           | "1.16.0"               |
