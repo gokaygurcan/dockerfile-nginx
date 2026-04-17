@@ -137,8 +137,9 @@ RUN set -ex && \
     make install && \
     # datadog
     mkdir /etc/nginx/modules && \
-    curl -fSL https://github.com/DataDog/nginx-datadog/releases/download/v${DATADOG_VERSION}/ngx_http_datadog_module-arm64-${NGINX_VERSION}.so.tgz && \
-    tar -xzf ngx_http_datadog_module-arm64-${NGINX_VERSION}.so.tgz -C /etc/nginx/modules && \
+    curl -fSL https://github.com/DataDog/nginx-datadog/releases/download/v${DATADOG_VERSION}/ngx_http_datadog_module-arm64-${NGINX_VERSION}.so.tgz -c ngx_http_datadog_module-arm64-${NGINX_VERSION}.so.tgz && \
+    tar -xzf ngx_http_datadog_module-arm64-${NGINX_VERSION}.so.tgz && \
+    mv ngx_http_datadog_module.so /etc/nginx/modules/ && \
     rm ngx_http_datadog_module-*.tar.gz && \
     # housekeeping
     cp ${USR_SRC_NGINX}/objs/ngx_http_acme_module.so /etc/nginx/modules/ngx_http_acme_module.so && \
