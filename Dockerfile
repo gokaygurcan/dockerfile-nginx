@@ -28,6 +28,7 @@ RUN set -ex && \
     libbrotli-dev \
     libmaxminddb-dev \
     libclang-dev \
+    libpcre2-dev \
     libssl-dev \
     libxml2 \
     libxml2-dev \
