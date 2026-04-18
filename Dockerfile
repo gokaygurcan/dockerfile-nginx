@@ -141,12 +141,11 @@ RUN set -ex && \
     make modules && \
     make install && \
     # housekeeping
-    mkdir -p /etc/nginx/modules && cd /etc/nginx/modules && \
-    cp ${USR_SRC_NGINX}/objs/ngx_http_acme_module.so /usr/local/nginx/modules/ngx_http_acme_module.so && \
+    mkdir -p /etc/nginx/modules && \
     # datadog
     curl -fSL https://github.com/DataDog/nginx-datadog/releases/download/v${DATADOG_VERSION}/ngx_http_datadog_module-arm64-${NGINX_VERSION}.so.tgz -o ngx_http_datadog_module-arm64-${NGINX_VERSION}.so.tgz && \
     tar -xzf ngx_http_datadog_module-arm64-${NGINX_VERSION}.so.tgz && \
-    cp ngx_http_datadog_module.so /usr/local/nginx/modules/ngx_http_datadog_module.so && \
+    cp ngx_http_datadog_module.so /etc/nginx/modules/ngx_http_datadog_module.so && \
     rm ngx_http_datadog_module-*.tgz && \
     # dummy html
     echo "✓" | tee /usr/local/nginx/html/index.html && \
@@ -173,7 +172,6 @@ COPY --from=nginx-build /etc/nginx /etc/nginx
 COPY --from=nginx-build /usr/lib /usr/lib
 COPY --from=nginx-build /usr/local/lib /usr/local/lib
 COPY --from=nginx-build /usr/local/nginx /usr/local/nginx
-COPY --from=nginx-build /usr/local/nginx/modules /usr/local/nginx/modules
 COPY --from=nginx-build /var/log/nginx /var/log/nginx
 COPY --from=nginx-build /usr/sbin/nginx /usr/sbin/nginx
 
