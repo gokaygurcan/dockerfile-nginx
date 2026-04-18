@@ -24,7 +24,6 @@ RUN set -ex && \
     apt-get dist-upgrade -yqq && \
     # install packages
     apt-get install -yqq --no-install-recommends --no-install-suggests \
-    cargo \
     libbrotli-dev \
     libmaxminddb-dev \
     libclang-dev \
@@ -38,6 +37,9 @@ RUN set -ex && \
     uuid-dev \
     zlib1g \
     zlib1g-dev && \
+    # install rust via rustup (apt version is too old for nginx-acme)
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable && \
+    export PATH="$HOME/.cargo/bin:$PATH" && \
     # start configuring the modules
     cd /tmp && \
     # maxmind geoip2
