@@ -47,7 +47,7 @@ jobs:
         images: gokaygurcan/nginx
         tags: |
           type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
-          type=pr
+          type=ref,event=pr
           type=sha,prefix=sha-,format=short,enable=${{ github.event_name == 'pull_request' }}
 
     - id: login
