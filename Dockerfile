@@ -114,6 +114,7 @@ RUN set -ex && \
     --with-http_stub_status_module \
     --with-http_sub_module \
     --with-http_v2_module \
+    --modules-path=/etc/nginx/modules \
     --with-openssl=${USR_SRC_NGINX_MODS}/openssl \
     --with-compat \
     --with-mail \
@@ -140,7 +141,7 @@ RUN set -ex && \
     make modules && \
     make install && \
     # housekeeping
-    mkdir /etc/nginx/modules && cd /etc/nginx/modules && \
+    mkdir -p /etc/nginx/modules && cd /etc/nginx/modules && \
     cp ${USR_SRC_NGINX}/objs/ngx_http_acme_module.so /etc/nginx/modules/ngx_http_acme_module.so && \
     # datadog
     curl -fSL https://github.com/DataDog/nginx-datadog/releases/download/v${DATADOG_VERSION}/ngx_http_datadog_module-arm64-${NGINX_VERSION}.so.tgz -o ngx_http_datadog_module-arm64-${NGINX_VERSION}.so.tgz && \
