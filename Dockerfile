@@ -1,6 +1,6 @@
 # gokaygurcan/dockerfile-nginx
 
-FROM rust:latest AS nginx-build
+FROM gokaygurcan/ubuntu:latest AS nginx-build
 LABEL maintainer="Gökay Gürcan <docker@gokaygurcan.com>"
 
 ARG DEBIAN_FRONTEND=noninteractive
