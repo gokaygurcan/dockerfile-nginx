@@ -165,6 +165,7 @@ FROM gokaygurcan/ubuntu:latest
 LABEL maintainer="Gökay Gürcan <docker@gokaygurcan.com>"
 
 COPY --from=nginx-build /etc/nginx /etc/nginx
+COPY --from=nginx-build /etc/nginx/modules /etc/nginx/modules
 COPY --from=nginx-build /usr/lib /usr/lib
 COPY --from=nginx-build /usr/local/lib /usr/local/lib
 COPY --from=nginx-build /usr/local/nginx /usr/local/nginx
