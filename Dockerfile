@@ -9,8 +9,7 @@ ENV USR_SRC=/usr/src \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
     NGINX_VERSION=1.30.0 \
     OPENSSL_VERSION=4.0.0 \
-    LIBMAXMINDDB_VERSION=1.13.3 \
-    DATADOG_VERSION=1.16.0
+    LIBMAXMINDDB_VERSION=1.13.3
 
 USER root
 
@@ -142,11 +141,6 @@ RUN set -ex && \
     make install && \
     # housekeeping
     mkdir -p /etc/nginx/modules && \
-    # datadog
-    curl -fSL https://github.com/DataDog/nginx-datadog/releases/download/v${DATADOG_VERSION}/ngx_http_datadog_module-arm64-${NGINX_VERSION}.so.tgz -o ngx_http_datadog_module-arm64-${NGINX_VERSION}.so.tgz && \
-    tar -xzf ngx_http_datadog_module-arm64-${NGINX_VERSION}.so.tgz && \
-    cp ngx_http_datadog_module.so /etc/nginx/modules/ngx_http_datadog_module.so && \
-    rm ngx_http_datadog_module-*.tgz && \
     # dummy html
     echo "✓" | tee /usr/local/nginx/html/index.html && \
     # Diffie-Hellman
