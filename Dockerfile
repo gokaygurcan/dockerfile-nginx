@@ -1,6 +1,6 @@
 # gokaygurcan/dockerfile-nginx
 
-FROM rust:latest AS nginx-build
+FROM gokaygurcan/ubuntu:latest AS nginx-build
 LABEL maintainer="Gökay Gürcan <docker@gokaygurcan.com>"
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -26,6 +26,7 @@ RUN set -ex && \
     libbrotli-dev \
     libmaxminddb-dev \
     libclang-dev \
+    libpcre2-dev \
     libssl-dev \
     libxml2 \
     libxml2-dev \
@@ -35,6 +36,9 @@ RUN set -ex && \
     uuid-dev \
     zlib1g \
     zlib1g-dev && \
+    # install rust via rustup (apt version is too old for nginx-acme)
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable && \
+    export PATH="$HOME/.cargo/bin:$PATH" && \
     # start configuring the modules
     cd /tmp && \
     # maxmind geoip2
@@ -109,6 +113,7 @@ RUN set -ex && \
     --with-http_stub_status_module \
     --with-http_sub_module \
     --with-http_v2_module \
+    --modules-path=/etc/nginx/modules \
     --with-openssl=${USR_SRC_NGINX_MODS}/openssl \
     --with-compat \
     --with-mail \
@@ -135,8 +140,7 @@ RUN set -ex && \
     make modules && \
     make install && \
     # housekeeping
-    mkdir /etc/nginx/modules && \
-    cp ${USR_SRC_NGINX}/objs/ngx_http_acme_module.so /etc/nginx/modules/ngx_http_acme_module.so && \
+    mkdir -p /etc/nginx/modules && \
     echo "✓" | tee /usr/local/nginx/html/index.html && \
     # Diffie-Hellman
     openssl dhparam -dsaparam -out /etc/nginx/dhparam.pem 4096 && \
@@ -158,6 +162,7 @@ FROM gokaygurcan/ubuntu:latest
 LABEL maintainer="Gökay Gürcan <docker@gokaygurcan.com>"
 
 COPY --from=nginx-build /etc/nginx /etc/nginx
+COPY --from=nginx-build /etc/nginx/modules /etc/nginx/modules
 COPY --from=nginx-build /usr/lib /usr/lib
 COPY --from=nginx-build /usr/local/lib /usr/local/lib
 COPY --from=nginx-build /usr/local/nginx /usr/local/nginx
