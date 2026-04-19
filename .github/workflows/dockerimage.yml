@@ -33,16 +33,18 @@ jobs:
 
     - id: qemu
       name: Set up QEMU
-      uses: docker/setup-qemu-action@v3
+      uses: docker/setup-qemu-action@v4
 
     - id: buildx
       name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      uses: docker/setup-buildx-action@v4
+      with:
+        platforms: linux/amd64,linux/arm64
 
     - id: build
       name: Build image
       run: |
-        docker buildx build --platform linux/arm64 --file Dockerfile --tag gokaygurcan/nginx:latest --load .
+        docker buildx build --file Dockerfile --tag gokaygurcan/nginx:latest --load .
         docker ps -a
 
     - id: test
@@ -52,7 +54,7 @@ jobs:
           docker volume create usr-share-geoip
           docker run --rm --name geoipupdate -v usr-share-geoip:/usr/share/GeoIP -e GEOIPUPDATE_FREQUENCY=0 -e GEOIPUPDATE_ACCOUNT_ID='${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}' -e GEOIPUPDATE_LICENSE_KEY='${{ secrets.GEOIPUPDATE_LICENSE_KEY }}' -e GEOIPUPDATE_EDITION_IDS='GeoLite2-City GeoLite2-Country' maxmindinc/geoipupdate
         fi
-        docker run --rm --platform linux/arm64 --name nginx gokaygurcan/nginx nginx -V
+        docker run --rm --name nginx gokaygurcan/nginx nginx -V
 
     - id: meta
       name: Generate image metadata
@@ -85,7 +87,7 @@ jobs:
         (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
       with:
         context: .
-        platforms: linux/arm64
+        platforms: linux/amd64,linux/arm64
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
