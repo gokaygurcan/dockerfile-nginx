@@ -7,7 +7,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV USR_SRC=/usr/src \
     USR_SRC_NGINX=/usr/src/nginx \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
-    NGINX_VERSION=1.30.0 \
+    NGINX_VERSION=1.31.0 \
     OPENSSL_VERSION=4.0.0 \
     LIBMAXMINDDB_VERSION=1.13.3
 
