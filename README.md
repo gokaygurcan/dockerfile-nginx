@@ -13,6 +13,7 @@
 | NGINX_VERSION        | 1.31.0                 |
 | OPENSSL_VERSION      | 4.0.0                  |
 | LIBMAXMINDDB_VERSION | 1.13.3                 |
+| DATADOG_VERSION      | 1.17.0                 |
 
 ## Additional packages
 
@@ -64,13 +65,19 @@ git clone https://github.com/gokaygurcan/dockerfile-nginx.git
 cd dockerfile-nginx
 
 # run nginx with the default configurations
-docker run --rm -d --name nginx -p 80:80 -p 443:443 \
-  -v `pwd`/docker/etc/nginx:/etc/nginx \
-  gokaygurcan/nginx
+docker run --rm -d --name nginx -p 80:80 -p 443:443 gokaygurcan/nginx
 
 # see if cURL returns anything good
 curl -i http://localhost
 ```
+
+## Datadog
+
+| Variable             | Path                   |
+| -------------------- | ---------------------- |
+| DD_SERVICE           | "nginx"                |
+| DD_ENV               | "production"           |
+| DD_VERSION           | "1.17.0"               |
 
 ## GeoIP
 

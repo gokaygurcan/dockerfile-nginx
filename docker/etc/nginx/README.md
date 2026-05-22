@@ -28,6 +28,7 @@
 ## conf.optional.d/
 
 - brotli.conf
+- datadog.conf
 - fancyindex.conf
 - mail.conf
 - more_headers.conf

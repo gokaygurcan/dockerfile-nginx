@@ -1,6 +1,6 @@
 # gokaygurcan/dockerfile-nginx
 
-FROM gokaygurcan/ubuntu:latest AS nginx-build
+FROM rust:latest AS nginx-build
 LABEL maintainer="Gökay Gürcan <docker@gokaygurcan.com>"
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -9,7 +9,8 @@ ENV USR_SRC=/usr/src \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
     NGINX_VERSION=1.31.0 \
     OPENSSL_VERSION=4.0.0 \
-    LIBMAXMINDDB_VERSION=1.13.3
+    LIBMAXMINDDB_VERSION=1.13.3 \
+    DATADOG_VERSION=1.17.0
 
 USER root
 
@@ -23,6 +24,7 @@ RUN set -ex && \
     apt-get dist-upgrade -yqq && \
     # install packages
     apt-get install -yqq --no-install-recommends --no-install-suggests \
+    cmake \
     libbrotli-dev \
     libmaxminddb-dev \
     libclang-dev \
@@ -60,6 +62,12 @@ RUN set -ex && \
     # /usr/src/nginx/modules
     mkdir -p ${USR_SRC_NGINX_MODS} && \
     cd ${USR_SRC_NGINX_MODS} && \
+    # datadog
+    curl -fSL https://github.com/DataDog/nginx-datadog/releases/download/v${DATADOG_VERSION}/ngx_http_datadog_module-arm64-${NGINX_VERSION}.so.tgz -o ngx_http_datadog_module-arm64-${NGINX_VERSION}.so.tgz && \
+    tar -xzf ngx_http_datadog_module-arm64-${NGINX_VERSION}.so.tgz && \
+    mkdir -p /etc/nginx/modules && \
+    cp ngx_http_datadog_module.so /etc/nginx/modules/ngx_http_datadog_module.so && \
+    rm ngx_http_datadog_module-*.tgz && \
     # openssl
     curl -fSL https://github.com/openssl/openssl/releases/download/openssl-${OPENSSL_VERSION}/openssl-${OPENSSL_VERSION}.tar.gz -o openssl-${OPENSSL_VERSION}.tar.gz && \
     tar -xzf openssl-${OPENSSL_VERSION}.tar.gz && \
@@ -81,12 +89,15 @@ RUN set -ex && \
     git clone https://github.com/vozlt/nginx-module-sysguard.git sysguard && \
     # aperezdc/ngx-fancyindex
     git clone https://github.com/aperezdc/ngx-fancyindex.git fancyindex && \
-    # eustas/ngx_brotli
-    git clone https://github.com/eustas/ngx_brotli.git brotli && \
-    cd ${USR_SRC_NGINX_MODS}/brotli/deps && \
-    rm -rf ./brotli && \
-    # google/brotli
-    git clone https://github.com/google/brotli.git brotli && \
+    # google/ngx_brotli
+    git clone --recurse-submodules -j8 https://github.com/google/ngx_brotli && \
+    cd ngx_brotli/deps/brotli && \
+    mkdir out && cd out && \
+    cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
+        -DCMAKE_C_FLAGS="-Ofast -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" \
+        -DCMAKE_CXX_FLAGS="-Ofast -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" \
+        -DCMAKE_INSTALL_PREFIX=./installed .. && \
+    cmake --build . --config Release --target brotlienc && \
     # compile nginx
     cd ${USR_SRC_NGINX} && \
     sh ./configure \
@@ -134,7 +145,7 @@ RUN set -ex && \
     --add-module=${USR_SRC_NGINX_MODS}/testcookie \
     --add-module=${USR_SRC_NGINX_MODS}/sysguard \
     --add-module=${USR_SRC_NGINX_MODS}/fancyindex \
-    --add-module=${USR_SRC_NGINX_MODS}/brotli && \
+    --add-module=${USR_SRC_NGINX_MODS}/ngx_brotli && \
     # make and install
     make && \
     make modules && \
@@ -185,6 +196,6 @@ STOPSIGNAL SIGTERM
 
 USER ubuntu
 
-HEALTHCHECK --interval=60s --start-period=60s CMD curl -f http://localhost/ || exit 1
+HEALTHCHECK --interval=30s --start-period=30s CMD curl -f http://localhost/ || exit 1
 
 CMD [ "sudo", "nginx", "-g", "daemon off;" ]
