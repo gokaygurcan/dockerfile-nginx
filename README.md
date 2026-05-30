@@ -10,10 +10,10 @@
 
 | Variable             | Version                |
 | -------------------- | ---------------------- |
-| NGINX_VERSION        | 1.31.0                 |
+| NGINX_VERSION        | 1.31.1                 |
 | OPENSSL_VERSION      | 4.0.0                  |
 | LIBMAXMINDDB_VERSION | 1.13.3                 |
-| DATADOG_VERSION      | 1.17.0                 |
+| DATADOG_VERSION      | 1.19.1                 |
 
 ## Additional packages
 
@@ -77,7 +77,7 @@ curl -i http://localhost
 | -------------------- | ---------------------- |
 | DD_SERVICE           | "nginx"                |
 | DD_ENV               | "production"           |
-| DD_VERSION           | "1.17.0"               |
+| DD_VERSION           | "1.19.1"               |
 
 ## GeoIP
 

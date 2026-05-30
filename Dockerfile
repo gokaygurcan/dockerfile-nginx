@@ -7,10 +7,10 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV USR_SRC=/usr/src \
     USR_SRC_NGINX=/usr/src/nginx \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
-    NGINX_VERSION=1.31.0 \
+    NGINX_VERSION=1.31.1 \
     OPENSSL_VERSION=4.0.0 \
     LIBMAXMINDDB_VERSION=1.13.3 \
-    DATADOG_VERSION=1.17.0
+    DATADOG_VERSION=1.19.1
 
 USER root
 
@@ -63,8 +63,8 @@ RUN set -ex && \
     mkdir -p ${USR_SRC_NGINX_MODS} && \
     cd ${USR_SRC_NGINX_MODS} && \
     # datadog
-    curl -fSL https://github.com/DataDog/nginx-datadog/releases/download/v${DATADOG_VERSION}/ngx_http_datadog_module-arm64-${NGINX_VERSION}.so.tgz -o ngx_http_datadog_module-arm64-${NGINX_VERSION}.so.tgz && \
-    tar -xzf ngx_http_datadog_module-arm64-${NGINX_VERSION}.so.tgz && \
+    curl -fSL https://github.com/DataDog/nginx-datadog/releases/download/v${DATADOG_VERSION}/ngx_http_datadog_module-amd64-${NGINX_VERSION}.so.tgz -o ngx_http_datadog_module-amd64-${NGINX_VERSION}.so.tgz && \
+    tar -xzf ngx_http_datadog_module-amd64-${NGINX_VERSION}.so.tgz && \
     mkdir -p /etc/nginx/modules && \
     cp ngx_http_datadog_module.so /etc/nginx/modules/ngx_http_datadog_module.so && \
     rm ngx_http_datadog_module-*.tgz && \
