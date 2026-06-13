@@ -11,7 +11,7 @@
 | Variable             | Version                |
 | -------------------- | ---------------------- |
 | NGINX_VERSION        | 1.31.1                 |
-| OPENSSL_VERSION      | 4.0.0                  |
+| OPENSSL_VERSION      | 4.0.1                  |
 | LIBMAXMINDDB_VERSION | 1.13.3                 |
 | DATADOG_VERSION      | 1.19.1                 |
 

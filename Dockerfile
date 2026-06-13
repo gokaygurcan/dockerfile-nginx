@@ -8,7 +8,7 @@ ENV USR_SRC=/usr/src \
     USR_SRC_NGINX=/usr/src/nginx \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
     NGINX_VERSION=1.31.1 \
-    OPENSSL_VERSION=4.0.0 \
+    OPENSSL_VERSION=4.0.1 \
     LIBMAXMINDDB_VERSION=1.13.3 \
     DATADOG_VERSION=1.19.1
 
