@@ -10,10 +10,10 @@
 
 | Variable             | Version                |
 | -------------------- | ---------------------- |
-| NGINX_VERSION        | 1.31.1                 |
+| NGINX_VERSION        | 1.31.3                 |
 | OPENSSL_VERSION      | 4.0.1                  |
 | LIBMAXMINDDB_VERSION | 1.13.3                 |
-| DATADOG_VERSION      | 1.19.1                 |
+| DATADOG_VERSION      | 1.21.0                 |
 
 ## Additional packages
 
@@ -65,7 +65,10 @@ git clone https://github.com/gokaygurcan/dockerfile-nginx.git
 cd dockerfile-nginx
 
 # run nginx with the default configurations
-docker run --rm -d --name nginx -p 80:80 -p 443:443 gokaygurcan/nginx
+docker run --rm -d \
+  --name nginx \
+  -p 80:80 -p 443:443 \
+  gokaygurcan/nginx
 
 # see if cURL returns anything good
 curl -i http://localhost
@@ -88,7 +91,8 @@ To use GeoIP, you need to download City and/or Country databases from MaxMind. T
 docker volume create usr-share-geoip
 
 # download geoip databases
-docker run --rm --name geoipupdate \
+docker run --rm \
+  --name geoipupdate \
   -v usr-share-geoip:/usr/share/GeoIP \
   -e GEOIPUPDATE_FREQUENCY=0 \
   -e GEOIPUPDATE_ACCOUNT_ID='<your account id>' \
@@ -97,7 +101,9 @@ docker run --rm --name geoipupdate \
   maxmindinc/geoipupdate
 
 # you can start nginx with this additional volume now
-docker run --rm -d --name nginx -p 80:80 -p 443:443 \
+docker run --rm -d \
+  --name nginx \
+  -p 80:80 -p 443:443 \
   -v `pwd`/docker/etc/nginx:/etc/nginx \
   -v usr-share-geoip:/usr/share/GeoIP \
   gokaygurcan/nginx

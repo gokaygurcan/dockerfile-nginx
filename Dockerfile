@@ -7,10 +7,10 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV USR_SRC=/usr/src \
     USR_SRC_NGINX=/usr/src/nginx \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
-    NGINX_VERSION=1.31.1 \
+    NGINX_VERSION=1.31.3 \
     OPENSSL_VERSION=4.0.1 \
     LIBMAXMINDDB_VERSION=1.13.3 \
-    DATADOG_VERSION=1.19.1
+    DATADOG_VERSION=1.21.0
 
 USER root
 
@@ -59,7 +59,7 @@ RUN set -ex && \
     tar -xzf nginx-${NGINX_VERSION}.tar.gz && \
     rm nginx-${NGINX_VERSION}.tar.gz && \
     mv nginx-* nginx && \
-    # /usr/src/nginx/modules
+    # /usr/src/nginx/modules
     mkdir -p ${USR_SRC_NGINX_MODS} && \
     cd ${USR_SRC_NGINX_MODS} && \
     # datadog
@@ -173,12 +173,9 @@ FROM gokaygurcan/ubuntu:latest
 LABEL maintainer="Gökay Gürcan <docker@gokaygurcan.com>"
 
 COPY --from=nginx-build /etc/nginx /etc/nginx
-COPY --from=nginx-build /etc/nginx/modules /etc/nginx/modules
-COPY --from=nginx-build /usr/lib /usr/lib
-COPY --from=nginx-build /usr/local/lib /usr/local/lib
-COPY --from=nginx-build /usr/local/nginx /usr/local/nginx
-COPY --from=nginx-build /var/log/nginx /var/log/nginx
+COPY --from=nginx-build /usr/local/nginx  /usr/local/nginx
 COPY --from=nginx-build /usr/sbin/nginx /usr/sbin/nginx
+COPY --from=nginx-build /var/log/nginx /var/log/nginx
 
 WORKDIR /etc/nginx
 
