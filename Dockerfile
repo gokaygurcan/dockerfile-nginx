@@ -63,7 +63,7 @@ RUN set -ex && \
     mkdir -p ${USR_SRC_NGINX_MODS} && \
     cd ${USR_SRC_NGINX_MODS} && \
     # datadog
-    curl -fSL https://github.com/DataDog/nginx-datadog/releases/download/v${DATADOG_VERSION}/ngx_http_datadog_module-amd64-${NGINX_VERSION}.so.tgz -o ngx_http_datadog_module-amd64-${NGINX_VERSION}.so.tgz && \
+    curl -fSL https://github.com/DataDog/nginx-datadog/releases/download/v${DATADOG_VERSION}/ngx_http_datadog_module-appsec-amd64-${NGINX_VERSION}.so.tgz -o ngx_http_datadog_module-amd64-${NGINX_VERSION}.so.tgz && \
     tar -xzf ngx_http_datadog_module-amd64-${NGINX_VERSION}.so.tgz && \
     mkdir -p /etc/nginx/modules && \
     cp ngx_http_datadog_module.so /etc/nginx/modules/ngx_http_datadog_module.so && \
