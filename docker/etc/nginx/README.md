@@ -9,10 +9,10 @@
 | /etc/nginx/koi-utf                 | Character set                            |
 | /etc/nginx/koi-win                 | Character set                            |
 | /etc/nginx/mime.types              | MIME types                               |
-| /etc/nginx/modules                 | Modules folder                           |
 | /etc/nginx/nginx.conf              | Main configuration file                  |
 | /etc/nginx/sites-enabled/\*\*/*    | Virtual host configuration files         |
 | /etc/nginx/win-utf                 | Character set                            |
+| /usr/local/lib/nginx/modules       | Modules folder                           |
 
 ---
 
