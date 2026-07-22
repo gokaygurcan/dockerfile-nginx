@@ -25,7 +25,11 @@ RUN set -ex && \
     apt-get dist-upgrade -yqq && \
     # install packages
     apt-get install -yqq --no-install-recommends --no-install-suggests \
+    build-essential \
+    ca-certificates \
     cmake \
+    curl \
+    git \
     libbrotli-dev \
     libmaxminddb-dev \
     libclang-dev \
