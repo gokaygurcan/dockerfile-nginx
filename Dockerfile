@@ -1,9 +1,10 @@
 # gokaygurcan/dockerfile-nginx
 
-FROM rust:latest AS nginx-build
+FROM ubuntu:noble AS nginx-build
 LABEL maintainer="Gökay Gürcan <docker@gokaygurcan.com>"
 
 ARG DEBIAN_FRONTEND=noninteractive
+ARG TARGETARCH=amd64
 ENV USR_SRC=/usr/src \
     USR_SRC_NGINX=/usr/src/nginx \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
@@ -63,8 +64,8 @@ RUN set -ex && \
     mkdir -p ${USR_SRC_NGINX_MODS} && \
     cd ${USR_SRC_NGINX_MODS} && \
     # datadog
-    curl -fSL https://github.com/DataDog/nginx-datadog/releases/download/v${DATADOG_VERSION}/ngx_http_datadog_module-appsec-amd64-${NGINX_VERSION}.so.tgz -o ngx_http_datadog_module-amd64-${NGINX_VERSION}.so.tgz && \
-    tar -xzf ngx_http_datadog_module-amd64-${NGINX_VERSION}.so.tgz && \
+    curl -fSL https://github.com/DataDog/nginx-datadog/releases/download/v${DATADOG_VERSION}/ngx_http_datadog_module-appsec-${TARGETARCH}-${NGINX_VERSION}.so.tgz -o ngx_http_datadog_module-${TARGETARCH}-${NGINX_VERSION}.so.tgz && \
+    tar -xzf ngx_http_datadog_module-${TARGETARCH}-${NGINX_VERSION}.so.tgz && \
     mkdir -p /usr/local/lib/nginx/modules && \
     cp ngx_http_datadog_module.so /usr/local/lib/nginx/modules/ngx_http_datadog_module.so && \
     rm ngx_http_datadog_module-*.tgz && \
@@ -94,8 +95,8 @@ RUN set -ex && \
     cd ngx_brotli/deps/brotli && \
     mkdir out && cd out && \
     cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
-        -DCMAKE_C_FLAGS="-Ofast -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" \
-        -DCMAKE_CXX_FLAGS="-Ofast -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" \
+        -DCMAKE_C_FLAGS="-O2 -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" \
+        -DCMAKE_CXX_FLAGS="-O2 -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" \
         -DCMAKE_INSTALL_PREFIX=./installed .. && \
     cmake --build . --config Release --target brotlienc && \
     # compile nginx
@@ -176,23 +177,25 @@ RUN set -ex && \
     apt-get update -qq && \
     apt-get upgrade -yqq && \
     apt-get install -yqq --no-install-recommends --no-install-suggests \
+    ca-certificates \
+    curl \
     libpcre2-8-0 \
-    zlib1g \
     libxml2 \
     libxslt1.1 \
-    ca-certificates \
-    curl && \
+    zlib1g && \
     apt-get autoclean -yqq && \
     apt-get autoremove -yqq && \
-    rm -rf /var/lib/apt/lists/* && \
-    ldconfig -v
-
+    rm -rf /var/lib/apt/lists/*
+    
 COPY --from=nginx-build /etc/nginx                          /etc/nginx
 COPY --from=nginx-build /usr/local/lib/libmaxminddb.so*     /usr/local/lib/
 COPY --from=nginx-build /usr/local/lib/nginx/modules        /usr/local/lib/nginx/modules
 COPY --from=nginx-build /usr/local/nginx                    /usr/local/nginx
 COPY --from=nginx-build /usr/sbin/nginx                     /usr/sbin/nginx
 COPY --from=nginx-build /var/log/nginx                      /var/log/nginx
+
+# run here after copy, otherwise it can't link new files
+RUN ldconfig -v
 
 WORKDIR /etc/nginx
 
