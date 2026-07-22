@@ -172,10 +172,28 @@ RUN set -ex && \
 FROM ubuntu:noble
 LABEL maintainer="Gökay Gürcan <docker@gokaygurcan.com>"
 
-COPY --from=nginx-build /etc/nginx /etc/nginx
-COPY --from=nginx-build /usr/local/nginx  /usr/local/nginx
-COPY --from=nginx-build /usr/sbin/nginx /usr/sbin/nginx
-COPY --from=nginx-build /var/log/nginx /var/log/nginx
+RUN set -ex && \
+    apt-get update -qq && \
+    apt-get upgrade -yqq && \
+    apt-get install -yqq --no-install-recommends --no-install-suggests \
+    libpcre2-8-0 \
+    zlib1g \
+    libxml2 \
+    libxslt1.1 \
+    ca-certificates \
+    curl && \
+    apt-get autoclean -yqq && \
+    apt-get autoremove -yqq && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY --from=nginx-build /etc/nginx                          /etc/nginx
+COPY --from=nginx-build /usr/local/lib/libmaxminddb.so*     /usr/local/lib/
+COPY --from=nginx-build /usr/local/lib/nginx/modules        /usr/local/lib/nginx/modules
+COPY --from=nginx-build /usr/local/nginx                    /usr/local/nginx
+COPY --from=nginx-build /usr/sbin/nginx                     /usr/sbin/nginx
+COPY --from=nginx-build /var/log/nginx                      /var/log/nginx
+
+RUN ldconfig
 
 WORKDIR /etc/nginx
 
