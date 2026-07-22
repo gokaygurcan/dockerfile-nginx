@@ -185,7 +185,7 @@ RUN set -ex && \
     apt-get autoclean -yqq && \
     apt-get autoremove -yqq && \
     rm -rf /var/lib/apt/lists/* && \
-    ldconfig -v && \
+    ldconfig -v
 
 COPY --from=nginx-build /etc/nginx                          /etc/nginx
 COPY --from=nginx-build /usr/local/lib/libmaxminddb.so*     /usr/local/lib/
