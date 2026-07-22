@@ -184,7 +184,8 @@ RUN set -ex && \
     curl && \
     apt-get autoclean -yqq && \
     apt-get autoremove -yqq && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    ldconfig -v && \
 
 COPY --from=nginx-build /etc/nginx                          /etc/nginx
 COPY --from=nginx-build /usr/local/lib/libmaxminddb.so*     /usr/local/lib/
@@ -192,8 +193,6 @@ COPY --from=nginx-build /usr/local/lib/nginx/modules        /usr/local/lib/nginx
 COPY --from=nginx-build /usr/local/nginx                    /usr/local/nginx
 COPY --from=nginx-build /usr/sbin/nginx                     /usr/sbin/nginx
 COPY --from=nginx-build /var/log/nginx                      /var/log/nginx
-
-RUN ldconfig
 
 WORKDIR /etc/nginx
 
@@ -205,12 +204,10 @@ ENV PATH="${PATH}:/usr/sbin/nginx"
 EXPOSE 80/tcp 443/tcp
 
 # possible folders to map
-VOLUME [ "/etc/nginx", "/var/log/nginx", "/var/www", "/etc/letsencrypt", "/usr/share/GeoIP" ]
+VOLUME [ "/etc/nginx", "/var/log/nginx", "/var/www", "/etc/letsencrypt" ]
 
 STOPSIGNAL SIGTERM
 
-USER ubuntu
-
 HEALTHCHECK --interval=30s --start-period=30s CMD curl -f http://localhost/ || exit 1
 
-CMD [ "sudo", "nginx", "-g", "daemon off;" ]
+CMD [ "nginx", "-g", "daemon off;" ]
