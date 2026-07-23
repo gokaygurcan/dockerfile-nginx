@@ -1,15 +1,17 @@
 # gokaygurcan/dockerfile-nginx
 
-FROM gokaygurcan/ubuntu:latest AS nginx-build
+FROM ubuntu:noble AS nginx-build
 LABEL maintainer="Gökay Gürcan <docker@gokaygurcan.com>"
 
 ARG DEBIAN_FRONTEND=noninteractive
+ARG TARGETARCH=amd64
 ENV USR_SRC=/usr/src \
     USR_SRC_NGINX=/usr/src/nginx \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
-    NGINX_VERSION=1.31.0 \
-    OPENSSL_VERSION=4.0.0 \
-    LIBMAXMINDDB_VERSION=1.13.3
+    NGINX_VERSION=1.31.3 \
+    OPENSSL_VERSION=4.0.1 \
+    LIBMAXMINDDB_VERSION=1.13.3 \
+    DATADOG_VERSION=1.21.0
 
 USER root
 
@@ -23,6 +25,11 @@ RUN set -ex && \
     apt-get dist-upgrade -yqq && \
     # install packages
     apt-get install -yqq --no-install-recommends --no-install-suggests \
+    build-essential \
+    ca-certificates \
+    cmake \
+    curl \
+    git \
     libbrotli-dev \
     libmaxminddb-dev \
     libclang-dev \
@@ -57,9 +64,15 @@ RUN set -ex && \
     tar -xzf nginx-${NGINX_VERSION}.tar.gz && \
     rm nginx-${NGINX_VERSION}.tar.gz && \
     mv nginx-* nginx && \
-    # /usr/src/nginx/modules
+    # /usr/src/nginx/modules
     mkdir -p ${USR_SRC_NGINX_MODS} && \
     cd ${USR_SRC_NGINX_MODS} && \
+    # datadog
+    curl -fSL https://github.com/DataDog/nginx-datadog/releases/download/v${DATADOG_VERSION}/ngx_http_datadog_module-appsec-${TARGETARCH}-${NGINX_VERSION}.so.tgz -o ngx_http_datadog_module-${TARGETARCH}-${NGINX_VERSION}.so.tgz && \
+    tar -xzf ngx_http_datadog_module-${TARGETARCH}-${NGINX_VERSION}.so.tgz && \
+    mkdir -p /usr/local/lib/nginx/modules && \
+    cp ngx_http_datadog_module.so /usr/local/lib/nginx/modules/ngx_http_datadog_module.so && \
+    rm ngx_http_datadog_module-*.tgz && \
     # openssl
     curl -fSL https://github.com/openssl/openssl/releases/download/openssl-${OPENSSL_VERSION}/openssl-${OPENSSL_VERSION}.tar.gz -o openssl-${OPENSSL_VERSION}.tar.gz && \
     tar -xzf openssl-${OPENSSL_VERSION}.tar.gz && \
@@ -81,12 +94,15 @@ RUN set -ex && \
     git clone https://github.com/vozlt/nginx-module-sysguard.git sysguard && \
     # aperezdc/ngx-fancyindex
     git clone https://github.com/aperezdc/ngx-fancyindex.git fancyindex && \
-    # eustas/ngx_brotli
-    git clone https://github.com/eustas/ngx_brotli.git brotli && \
-    cd ${USR_SRC_NGINX_MODS}/brotli/deps && \
-    rm -rf ./brotli && \
-    # google/brotli
-    git clone https://github.com/google/brotli.git brotli && \
+    # google/ngx_brotli
+    git clone --recurse-submodules -j8 https://github.com/google/ngx_brotli && \
+    cd ngx_brotli/deps/brotli && \
+    mkdir out && cd out && \
+    cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
+        -DCMAKE_C_FLAGS="-O2 -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" \
+        -DCMAKE_CXX_FLAGS="-O2 -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" \
+        -DCMAKE_INSTALL_PREFIX=./installed .. && \
+    cmake --build . --config Release --target brotlienc && \
     # compile nginx
     cd ${USR_SRC_NGINX} && \
     sh ./configure \
@@ -113,7 +129,7 @@ RUN set -ex && \
     --with-http_stub_status_module \
     --with-http_sub_module \
     --with-http_v2_module \
-    --modules-path=/etc/nginx/modules \
+    --modules-path=/usr/local/lib/nginx/modules \
     --with-openssl=${USR_SRC_NGINX_MODS}/openssl \
     --with-compat \
     --with-mail \
@@ -134,13 +150,13 @@ RUN set -ex && \
     --add-module=${USR_SRC_NGINX_MODS}/testcookie \
     --add-module=${USR_SRC_NGINX_MODS}/sysguard \
     --add-module=${USR_SRC_NGINX_MODS}/fancyindex \
-    --add-module=${USR_SRC_NGINX_MODS}/brotli && \
+    --add-module=${USR_SRC_NGINX_MODS}/ngx_brotli && \
     # make and install
     make && \
     make modules && \
     make install && \
     # housekeeping
-    mkdir -p /etc/nginx/modules && \
+    mkdir -p /usr/local/lib/nginx/modules && \
     echo "✓" | tee /usr/local/nginx/html/index.html && \
     # Diffie-Hellman
     openssl dhparam -dsaparam -out /etc/nginx/dhparam.pem 4096 && \
@@ -158,16 +174,32 @@ RUN set -ex && \
     ln -sf /dev/stdout /var/log/nginx/access.log && \
     ln -sf /dev/stderr /var/log/nginx/error.log
 
-FROM gokaygurcan/ubuntu:latest
+FROM ubuntu:noble
 LABEL maintainer="Gökay Gürcan <docker@gokaygurcan.com>"
 
-COPY --from=nginx-build /etc/nginx /etc/nginx
-COPY --from=nginx-build /etc/nginx/modules /etc/nginx/modules
-COPY --from=nginx-build /usr/lib /usr/lib
-COPY --from=nginx-build /usr/local/lib /usr/local/lib
-COPY --from=nginx-build /usr/local/nginx /usr/local/nginx
-COPY --from=nginx-build /var/log/nginx /var/log/nginx
-COPY --from=nginx-build /usr/sbin/nginx /usr/sbin/nginx
+RUN set -ex && \
+    apt-get update -qq && \
+    apt-get upgrade -yqq && \
+    apt-get install -yqq --no-install-recommends --no-install-suggests \
+    ca-certificates \
+    curl \
+    libpcre2-8-0 \
+    libxml2 \
+    libxslt1.1 \
+    zlib1g && \
+    apt-get autoclean -yqq && \
+    apt-get autoremove -yqq && \
+    rm -rf /var/lib/apt/lists/*
+    
+COPY --from=nginx-build /etc/nginx                          /etc/nginx
+COPY --from=nginx-build /usr/local/lib/libmaxminddb.so*     /usr/local/lib/
+COPY --from=nginx-build /usr/local/lib/nginx/modules        /usr/local/lib/nginx/modules
+COPY --from=nginx-build /usr/local/nginx                    /usr/local/nginx
+COPY --from=nginx-build /usr/sbin/nginx                     /usr/sbin/nginx
+COPY --from=nginx-build /var/log/nginx                      /var/log/nginx
+
+# run here after copy, otherwise it can't link new files
+RUN ldconfig -v
 
 WORKDIR /etc/nginx
 
@@ -179,12 +211,10 @@ ENV PATH="${PATH}:/usr/sbin/nginx"
 EXPOSE 80/tcp 443/tcp
 
 # possible folders to map
-VOLUME [ "/etc/nginx", "/var/log/nginx", "/var/www", "/etc/letsencrypt", "/usr/share/GeoIP" ]
+VOLUME [ "/etc/nginx", "/var/log/nginx", "/var/www", "/etc/letsencrypt" ]
 
 STOPSIGNAL SIGTERM
 
-USER ubuntu
+HEALTHCHECK --interval=30s --start-period=30s CMD curl -f http://localhost/ || exit 1
 
-HEALTHCHECK --interval=60s --start-period=60s CMD curl -f http://localhost/ || exit 1
-
-CMD [ "sudo", "nginx", "-g", "daemon off;" ]
+CMD [ "nginx", "-g", "daemon off;" ]
