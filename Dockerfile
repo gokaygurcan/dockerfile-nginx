@@ -8,10 +8,10 @@ ARG TARGETARCH=amd64
 ENV USR_SRC=/usr/src \
     USR_SRC_NGINX=/usr/src/nginx \
     USR_SRC_NGINX_MODS=/usr/src/nginx/modules \
-    NGINX_VERSION=1.31.6 \
-    OPENSSL_VERSION=4.1.0-alpha1 \
+    NGINX_VERSION=1.31.8 \
+    OPENSSL_VERSION=4.1.0-beta1 \
     LIBMAXMINDDB_VERSION=1.14.1 \
-    DATADOG_VERSION=1.24.0
+    DATADOG_VERSION=1.27.0
 
 USER root
 
