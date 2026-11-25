@@ -10,10 +10,10 @@
 
 | Variable             | Version                |
 | -------------------- | ---------------------- |
-| NGINX_VERSION        | 1.31.9                 |
+| NGINX_VERSION        | 1.31.10                |
 | OPENSSL_VERSION      | 4.1.0                  |
 | LIBMAXMINDDB_VERSION | 1.14.1                 |
-| DATADOG_VERSION      | 1.29.0                 |
+| DATADOG_VERSION      | 1.30.0                 |
 
 ## Additional packages
 
